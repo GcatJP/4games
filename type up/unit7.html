@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Adventure Island Type-Up!</title>
+    <style>
+      :root {
+        --sand: #f6e3b4;
+        --sand-dark: #e8c988;
+        --ocean-deep: #0e6e6e;
+        --ocean: #1e97a0;
+        --ocean-light: #54c7c9;
+        --coral: #ff7b54;
+        --sun: #ffd23f;
+        --ink: #0b3d3a;
+        --white: #fffdf8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100dvh;
+        overflow: hidden;
+        background: linear-gradient(to bottom, #30b0c7, #40c8e0);
+        font-family: "Trebuchet MS", "Verdana", sans-serif;
+        color: var(--ink);
+      }
+
+      /* decorative */
+      .sun {
+        position: absolute;
+        top: max(10px, env(safe-area-inset-top, 10px));
+        right: clamp(10px, 4vw, 40px);
+        width: clamp(40px, 8vw, 72px);
+        height: clamp(40px, 8vw, 72px);
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #ffefae, var(--sun) 70%);
+        box-shadow: 0 0 24px 8px rgba(255, 210, 63, 0.5);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .cloud {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.82);
+        border-radius: 50px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .cloud::before,
+      .cloud::after {
+        content: "";
+        position: absolute;
+        background: inherit;
+        border-radius: 50%;
+      }
+      .cloud1 {
+        top: 5%;
+        left: 5%;
+        width: 80px;
+        height: 26px;
+      }
+      .cloud1::before {
+        width: 40px;
+        height: 40px;
+        top: -18px;
+        left: 8px;
+      }
+      .cloud1::after {
+        width: 30px;
+        height: 30px;
+        top: -12px;
+        left: 42px;
+      }
+      .cloud2 {
+        top: 12%;
+        left: 55%;
+        width: 60px;
+        height: 20px;
+        opacity: 0.75;
+      }
+      .cloud2::before {
+        width: 30px;
+        height: 30px;
+        top: -14px;
+        left: 6px;
+      }
+      .cloud2::after {
+        width: 22px;
+        height: 22px;
+        top: -8px;
+        left: 32px;
+      }
+
+      /* layout */
+      .wrap {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+        padding: max(6px, env(safe-area-inset-top, 6px))
+          max(10px, env(safe-area-inset-right, 10px))
+          max(8px, env(safe-area-inset-bottom, 8px))
+          max(10px, env(safe-area-inset-left, 10px));
+        gap: 10px;
+      }
+
+      /* header row */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 4px 0 6px;
+        gap: clamp(6px, 2vw, 14px);
+      }
+
+      h1 {
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive, sans-serif;
+        font-size: clamp(16px, 5.5vw, 50px);
+        color: var(--sun);
+        -webkit-text-stroke: 1.5px var(--ocean-deep);
+        white-space: nowrap;
+      }
+
+      .pill {
+        background: var(--white);
+        border: 2.5px solid var(--ocean);
+        border-radius: 999px;
+        padding: 3px 9px;
+        font-weight: bold;
+        font-size: clamp(10px, 2vw, 14px);
+        white-space: nowrap;
+        color: var(--ocean-deep);
+      }
+
+      .reset-btn {
+        background: var(--coral);
+        color: var(--white);
+        border: none;
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: clamp(10px, 2vw, 14px);
+        white-space: nowrap;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 3px 0 #c2522f;
+        font-family: inherit;
+        flex-shrink: 0;
+        text-decoration: none;
+      }
+      .reset-btn:active {
+        transform: translateY(2px);
+        box-shadow: none;
+      }
+
+      /* main play area */
+      .stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+        gap: clamp(10px, 2.5vh, 22px);
+      }
+
+      .progress {
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive;
+        font-weight: bold;
+        color: var(--white);
+        -webkit-text-stroke: 0.5px var(--ocean-deep);
+        font-size: clamp(13px, 3vw, 20px);
+      }
+
+      .picture-card {
+        width: clamp(200px, 58vw, 380px);
+        height: clamp(200px, 58vw, 380px);
+        background: var(--white);
+        border-radius: clamp(14px, 3vw, 24px);
+        border: 3px solid #007286;
+        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5%;
+        position: relative;
+        transition: transform 0.25s ease;
+      }
+      .picture-card img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .side-img {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: clamp(50px, 12vw, 120px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .side-img.left {
+        left: clamp(4px, 3vw, 40px);
+      }
+      .side-img.right {
+        right: clamp(4px, 3vw, 40px);
+      }
+      .picture-card.correct {
+        border-color: #5fd66a;
+        animation: glow 1s ease-in-out infinite alternate;
+      }
+      .picture-card.wrong {
+        animation: shake 0.4s;
+        border-color: var(--coral);
+      }
+      @keyframes glow {
+        from {
+          box-shadow:
+            0 0 6px 0 rgba(95, 214, 106, 0.6),
+            0 6px 0 rgba(0, 0, 0, 0.12);
+        }
+        to {
+          box-shadow:
+            0 0 18px 7px rgba(95, 214, 106, 0.85),
+            0 6px 0 rgba(0, 0, 0, 0.12);
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-8px);
+        }
+        75% {
+          transform: translateX(8px);
+        }
+      }
+
+      .answer-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: min(96vw, 560px);
+      }
+
+      .answer-stack {
+        position: relative;
+        width: 100%;
+      }
+
+      .answer-input {
+        width: 100%;
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive, sans-serif;
+        font-size: clamp(16px, 4.2vw, 24px);
+        font-weight: bold;
+        color: var(--ocean-deep);
+        background: var(--white);
+        border: 3px solid #12600a;
+        border-radius: 14px;
+        padding: 16px 18px;
+        outline: none;
+      }
+      .answer-input.is-hidden {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .answer-display {
+        display: none;
+        width: 100%;
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive, sans-serif;
+        font-size: clamp(16px, 4.2vw, 24px);
+        font-weight: bold;
+        color: var(--ocean-deep);
+        background: var(--white);
+        border: 3px solid var(--coral);
+        border-radius: 14px;
+        padding: 16px 18px;
+        cursor: text;
+      }
+      .answer-display.show {
+        display: block;
+      }
+      .answer-display .bad-word {
+        color: var(--coral);
+        text-decoration: underline;
+        text-decoration-color: var(--coral);
+        text-decoration-thickness: 3px;
+        text-underline-offset: 3px;
+      }
+
+      .submit-row {
+        display: flex;
+        justify-content: center;
+      }
+      .answer-input:focus {
+        border-color: var(--coral);
+      }
+      .answer-input.wrong-flash {
+        border-color: var(--coral);
+        animation: shake 0.4s;
+      }
+      .answer-input.correct-flash {
+        border-color: #5fd66a;
+      }
+
+      .submit-btn {
+        background: var(--ocean-deep);
+        color: var(--white);
+        border: none;
+        border-radius: 14px;
+        padding: 10px 18px;
+        font-family: inherit;
+        font-weight: bold;
+        font-size: clamp(13px, 3vw, 17px);
+        cursor: pointer;
+        box-shadow: 0 3px 0 #073533;
+        white-space: nowrap;
+      }
+      .submit-btn:active {
+        transform: translateY(2px);
+        box-shadow: none;
+      }
+
+      .feedback {
+        min-height: 22px;
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive;
+        font-weight: bold;
+        font-size: clamp(13px, 3vw, 18px);
+      }
+      .feedback.correct {
+        color: #ffffff;
+        -webkit-text-stroke: 0.5px #1d7a2c;
+      }
+      .feedback.wrong {
+        color: var(--white);
+        -webkit-text-stroke: 0.5px #a23a1c;
+      }
+
+      .rotate-msg {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--ocean-deep);
+        color: var(--white);
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 100;
+        font-weight: bold;
+        font-size: 18px;
+        padding: 20px;
+      }
+      @media (orientation: landscape) and (max-height: 480px) {
+        .rotate-msg {
+          display: flex;
+        }
+      }
+      @media (orientation: portrait) {
+        .rotate-msg {
+          display: none;
+        }
+      }
+
+      /* win overlay */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 61, 58, 0.72);
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 20px;
+      }
+      .overlay.show {
+        display: flex;
+      }
+      .win-card {
+        background: var(--white);
+        border-radius: 24px;
+        padding: clamp(20px, 5vw, 36px);
+        text-align: center;
+        max-width: 360px;
+        width: 100%;
+        box-shadow: 0 10px 0 rgba(0, 0, 0, 0.15);
+        border: 4px solid var(--sun);
+      }
+      .win-card h2 {
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive;
+        color: var(--coral);
+        -webkit-text-stroke: 1px var(--ocean-deep);
+        font-size: clamp(22px, 5.5vw, 30px);
+        margin: 0 0 8px;
+      }
+      .win-card p {
+        font-weight: bold;
+        color: var(--ocean-deep);
+        margin-bottom: 16px;
+      }
+      .win-emojis {
+        font-size: 32px;
+        margin-bottom: 8px;
+      }
+
+      /* intro/example overlay */
+      .intro-card img {
+        width: clamp(120px, 35vw, 200px);
+        height: clamp(120px, 35vw, 200px);
+        object-fit: contain;
+        margin: 0 auto 14px;
+        display: block;
+      }
+      .intro-card .example-label {
+        font-size: clamp(11px, 2.5vw, 14px);
+        font-weight: bold;
+        color: var(--ocean);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+      .intro-card .example-question-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .intro-card .example-question {
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive;
+        font-size: clamp(18px, 4.5vw, 24px);
+        color: var(--ocean-deep);
+      }
+      .speak-btn {
+        background: var(--ocean);
+        color: var(--white);
+        border: none;
+        border-radius: 50%;
+        width: clamp(34px, 8vw, 42px);
+        height: clamp(34px, 8vw, 42px);
+        flex-shrink: 0;
+        font-size: clamp(16px, 4vw, 20px);
+        cursor: pointer;
+        box-shadow: 0 3px 0 #0c5b5e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+      .speak-btn:active {
+        transform: translateY(2px);
+        box-shadow: none;
+      }
+      .speak-btn.speaking {
+        background: var(--coral);
+        box-shadow: 0 3px 0 #c2522f;
+        animation: pulse 0.6s ease-in-out infinite alternate;
+      }
+      @keyframes pulse {
+        from {
+          transform: scale(1);
+        }
+        to {
+          transform: scale(1.12);
+        }
+      }
+      .ok-btn {
+        background: var(--ocean-deep);
+        color: var(--white);
+        border: none;
+        border-radius: 999px;
+        padding: 12px 32px;
+        font-family: "Chalkboard SE", "Comic Sans MS", cursive, sans-serif;
+        font-weight: bold;
+        font-size: clamp(16px, 4vw, 20px);
+        cursor: pointer;
+        box-shadow: 0 4px 0 #073533;
+      }
+      .ok-btn:active {
+        transform: translateY(3px);
+        box-shadow: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rotate-msg">
+      <p>🔄 Please rotate your device to portrait mode!</p>
+    </div>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div class="wrap">
+      <div class="header">
+        <a class="reset-btn" href="index.html">⬅️ Back</a>
+        <h1>Unit 7</h1>
+        <button class="reset-btn" id="resetBtn">Play Again 🦜</button>
+      </div>
+
+      <div class="stage">
+        <div class="progress" id="progress">Question 1 of 8</div>
+
+        <img class="side-img left" src="../images/sh1.png" alt="" />
+        <img class="side-img right" src="../images/kh1.png" alt="" />
+
+        <div class="picture-card" id="pictureCard">
+          <div
+            id="questionWord"
+            style="
+              font-family:
+                &quot;Chalkboard SE&quot;, &quot;Comic Sans MS&quot;, cursive;
+              font-size: clamp(28px, 8vw, 56px);
+              font-weight: bold;
+              color: #007286;
+              text-align: center;
+            "
+          ></div>
+        </div>
+        <div class="answer-row">
+          <div class="answer-stack">
+            <input
+              class="answer-input"
+              id="answerInput"
+              type="text"
+              placeholder="Type the sentence..."
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <div class="answer-display" id="answerDisplay"></div>
+          </div>
+          <div class="submit-row">
+            <button class="submit-btn" id="submitBtn">Check ✔️</button>
+          </div>
+        </div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>
+
+    <div class="overlay show" id="introOverlay">
+      <div class="win-card intro-card">
+        <div class="example-label">Example</div>
+        <div
+          id="introWord"
+          style="
+            font-family:
+              &quot;Chalkboard SE&quot;, &quot;Comic Sans MS&quot;, cursive;
+            font-size: clamp(28px, 8vw, 56px);
+            font-weight: bold;
+            color: #007286;
+            text-align: center;
+            margin: 0 auto 14px;
+          "
+        ></div>
+        <div class="example-question-row">
+          <div class="example-question" id="introQuestion">.</div>
+          <button
+            class="speak-btn"
+            id="speakBtn"
+            aria-label="Hear the sentence"
+            type="button"
+          >
+            🔊
+          </button>
+        </div>
+        <p>Type the matching sentence for each picture!</p>
+        <button class="ok-btn" id="introOkBtn">OK</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="win-card">
+        <div class="win-emojis">🏆 Great! 🏆</div>
+        <h2>You finished all the questions!</h2>
+        <p id="winStats">Adventure Island</p>
+        <button class="reset-btn" id="playAgainBtn">Play Again 🌴</button>
+      </div>
+    </div>
+
+    <script>
+      /* ---- QUESTIONS — replace image paths with your real files ----
+               NOTE: QUESTIONS[0] is also used as the example in the intro
+               popup, and it's always Question 1 in the game (not shuffled).
+               The rest of the list is shuffled each playthrough. */
+      const QUESTIONS = [
+        { word: "Who is she?", answer: "She's Sami." },
+        { word: "What is this?", answer: "It's a clock?" },
+        { word: "When is New Year?", answer: "It's on January 1st." },
+        { word: "Where is the book?", answer: "It's on the table." },
+        { word: "Why do you like pizza?", answer: "Because it's delicious." },
+        {
+          word: "How do you do your homework?",
+          answer: "With a tablet and my book.",
+        },
+      ];
+
+      /* ---- audio ---- */
+      let audioCtx = null;
+      function getCtx() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+      }
+      function playTone(freq, startTime, duration, gainPeak) {
+        const ctx = getCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(gainPeak, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        osc.start(startTime);
+        osc.stop(startTime + duration + 0.02);
+      }
+      function playMatchJingle() {
+        const ctx = getCtx(),
+          now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
+          playTone(f, now + i * 0.09, 0.22, 0.22),
+        );
+      }
+      function playWrongSound() {
+        const ctx = getCtx(),
+          now = ctx.currentTime;
+        playTone(220, now, 0.18, 0.12);
+        playTone(196, now + 0.08, 0.18, 0.1);
+      }
+      function playWinFanfare() {
+        const ctx = getCtx(),
+          now = ctx.currentTime;
+        [523.25, 523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) =>
+          playTone(f, now + [0, 0.15, 0.3, 0.45, 0.6, 0.8][i], 0.3, 0.22),
+        );
+      }
+
+      /* ---- intro/example overlay: always Question 1, taken from QUESTIONS[0] ---- */
+      // Edit QUESTIONS[0] above to change the example sentence/image — this
+      // section and the first question in the game will update automatically.
+      const EXAMPLE_SENTENCE = QUESTIONS[0].answer;
+
+      document.getElementById("introQuestion").textContent = EXAMPLE_SENTENCE;
+
+      /* ---- text-to-speech (computer voice) for the example sentence ---- */
+      const speakBtn = document.getElementById("speakBtn");
+      let voicesReady = false;
+      let pickedVoice = null;
+
+      function choosePreferredVoice() {
+        const voices = window.speechSynthesis
+          ? window.speechSynthesis.getVoices()
+          : [];
+        if (!voices.length) return null;
+        // Prefer a clear English voice if one is available.
+        return (
+          voices.find((v) => /en-US/i.test(v.lang) && /female/i.test(v.name)) ||
+          voices.find((v) => /en-US/i.test(v.lang)) ||
+          voices.find((v) => /^en/i.test(v.lang)) ||
+          voices[0]
+        );
+      }
+
+      function speakExample() {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(EXAMPLE_SENTENCE);
+        utter.lang = "en-US";
+        utter.rate = 0.9;
+        utter.pitch = 1.05;
+        if (pickedVoice) utter.voice = pickedVoice;
+
+        speakBtn.classList.add("speaking");
+        utter.onend = () => speakBtn.classList.remove("speaking");
+        utter.onerror = () => speakBtn.classList.remove("speaking");
+
+        window.speechSynthesis.speak(utter);
+      }
+
+      if ("speechSynthesis" in window) {
+        pickedVoice = choosePreferredVoice();
+        window.speechSynthesis.onvoiceschanged = () => {
+          pickedVoice = choosePreferredVoice();
+        };
+        // Try to auto-play as soon as the page is ready. Some mobile
+        // browsers block speech until there's been a user gesture, so
+        // the 🔊 button is always available as a manual fallback.
+        window.addEventListener("load", () => {
+          setTimeout(speakExample, 350);
+        });
+      } else if (speakBtn) {
+        speakBtn.style.display = "none";
+      }
+
+      speakBtn.addEventListener("click", speakExample);
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      /* ---- game state ---- */
+      let gameQuestions = [];
+      let currentIndex = 0;
+      let tries = 0;
+      let locked = false;
+
+      const pictureCard = document.getElementById("pictureCard");
+
+      const answerInput = document.getElementById("answerInput");
+      const answerDisplay = document.getElementById("answerDisplay");
+      const submitBtn = document.getElementById("submitBtn");
+      const feedback = document.getElementById("feedback");
+      const progress = document.getElementById("progress");
+      const overlay = document.getElementById("overlay");
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function renderMistakes(typed, correct) {
+        const typedWords = typed.split(" ").filter((w) => w !== "");
+        const correctWords = correct.split(" ").filter((w) => w !== "");
+
+        // Standard LCS-based alignment so missing/extra words don't
+        // shift every later word out of sync.
+        const n = typedWords.length;
+        const m = correctWords.length;
+        const dp = Array.from({ length: n + 1 }, () =>
+          new Array(m + 1).fill(0),
+        );
+        for (let i = 1; i <= n; i++) {
+          for (let j = 1; j <= m; j++) {
+            dp[i][j] =
+              typedWords[i - 1] === correctWords[j - 1]
+                ? dp[i - 1][j - 1] + 1
+                : Math.max(dp[i - 1][j], dp[i][j - 1]);
+          }
+        }
+
+        // Walk back through the table to build an ordered list of ops:
+        // 'match' (word correct), 'sub' (wrong word typed), 'missing' (word skipped)
+        const ops = [];
+        let i = n,
+          j = m;
+        while (i > 0 || j > 0) {
+          if (i > 0 && j > 0 && typedWords[i - 1] === correctWords[j - 1]) {
+            ops.unshift({ type: "match", word: typedWords[i - 1] });
+            i--;
+            j--;
+          } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+            ops.unshift({ type: "missing" });
+            j--;
+          } else {
+            ops.unshift({ type: "sub", word: typedWords[i - 1] });
+            i--;
+          }
+        }
+
+        let html = "";
+        ops.forEach((op, idx) => {
+          if (op.type === "match") {
+            html += `<span>${escapeHtml(op.word)}</span>`;
+          } else if (op.type === "missing") {
+            html += `<span class="bad-word">_</span>`;
+          } else {
+            html += `<span class="bad-word">${escapeHtml(op.word)}</span>`;
+          }
+          if (idx < ops.length - 1) html += " ";
+        });
+        answerDisplay.innerHTML = html;
+      }
+
+      function loadQuestion() {
+        const q = gameQuestions[currentIndex];
+        document.getElementById("questionWord").textContent = q.word;
+
+        document.getElementById("questionWord").textContent = q.word;
+        progress.textContent = `Question ${currentIndex + 1} of ${gameQuestions.length}`;
+        feedback.textContent = "";
+        feedback.className = "feedback";
+        pictureCard.classList.remove("correct", "wrong");
+        answerInput.value = "";
+        answerInput.classList.remove(
+          "wrong-flash",
+          "correct-flash",
+          "is-hidden",
+        );
+        answerDisplay.classList.remove("show");
+        locked = false;
+        answerInput.focus();
+      }
+
+      function checkAnswer() {
+        if (locked) return;
+        getCtx();
+        const typed = answerInput.value;
+        const correctAnswer = gameQuestions[currentIndex].answer;
+
+        if (typed === correctAnswer) {
+          locked = true;
+          tries++;
+          pictureCard.classList.add("correct");
+          answerInput.classList.add("correct-flash");
+          feedback.textContent = "🎉 That's right!";
+          feedback.classList.add("correct");
+          playMatchJingle();
+
+          setTimeout(() => {
+            currentIndex++;
+            if (currentIndex >= gameQuestions.length) {
+              showWin();
+            } else {
+              loadQuestion();
+            }
+          }, 1000);
+        } else {
+          tries++;
+          pictureCard.classList.add("wrong");
+          feedback.textContent = "❌ Try again!";
+          feedback.classList.add("wrong");
+          playWrongSound();
+
+          renderMistakes(typed, correctAnswer);
+          answerInput.classList.add("is-hidden");
+          answerDisplay.classList.add("show");
+
+          setTimeout(() => {
+            pictureCard.classList.remove("wrong");
+          }, 400);
+        }
+      }
+
+      function resumeTyping() {
+        answerInput.classList.remove("is-hidden");
+        answerDisplay.classList.remove("show");
+        answerInput.focus();
+      }
+
+      function showWin() {
+        document.getElementById("winStats").textContent =
+          `You answered all ${gameQuestions.length} questions in ${tries} tries!`;
+        overlay.classList.add("show");
+        playWinFanfare();
+      }
+
+      function newGame() {
+        // Question 1 is always the same one shown in the example popup
+        // (QUESTIONS[0]); everything after it is shuffled.
+        gameQuestions = [QUESTIONS[0], ...shuffle(QUESTIONS.slice(1))];
+        currentIndex = 0;
+        tries = 0;
+        overlay.classList.remove("show");
+        loadQuestion();
+      }
+
+      submitBtn.addEventListener("click", checkAnswer);
+      answerInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") checkAnswer();
+      });
+      answerDisplay.addEventListener("click", resumeTyping);
+      document.getElementById("resetBtn").addEventListener("click", newGame);
+      document
+        .getElementById("playAgainBtn")
+        .addEventListener("click", newGame);
+      document.getElementById("introOkBtn").addEventListener("click", () => {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        document.getElementById("introOverlay").classList.remove("show");
+        newGame();
+      });
+
+      gameQuestions = [QUESTIONS[0], ...shuffle(QUESTIONS.slice(1))];
+      loadQuestion();
+    </script>
+  </body>
+</html>

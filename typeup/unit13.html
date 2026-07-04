@@ -522,11 +522,14 @@
             id="questionWord"
             style="
               font-family:
-                &quot;Chalkboard SE&quot;, &quot;Comic Sans MS&quot;, cursive;
-              font-size: clamp(28px, 8vw, 56px);
+                &quot;Hiragino Sans&quot;,
+                &quot;Hiragino Kaku Gothic ProN&quot;, &quot;Yu Gothic&quot;,
+                &quot;Noto Sans JP&quot;, sans-serif;
+              font-size: clamp(18px, 5.5vw, 34px);
               font-weight: bold;
               color: #007286;
               text-align: center;
+              white-space: pre-line;
             "
           ></div>
         </div>
@@ -554,12 +557,14 @@
     <div class="overlay show" id="introOverlay">
       <div class="win-card intro-card">
         <div class="example-label">Example</div>
+
         <div
           id="introWord"
           style="
             font-family:
-              &quot;Chalkboard SE&quot;, &quot;Comic Sans MS&quot;, cursive;
-            font-size: clamp(28px, 8vw, 56px);
+              &quot;Hiragino Sans&quot;, &quot;Hiragino Kaku Gothic ProN&quot;,
+              &quot;Yu Gothic&quot;, &quot;Noto Sans JP&quot;, sans-serif;
+            font-size: clamp(18px, 5.5vw, 34px);
             font-weight: bold;
             color: #007286;
             text-align: center;
@@ -597,7 +602,7 @@
                popup, and it's always Question 1 in the game (not shuffled).
                The rest of the list is shuffled each playthrough. */
       const QUESTIONS = [
-        { word: "私はいつも料理をします", answer: "I always cook." },
+        { word: "私はいつも\n料理をします", answer: "I always cook." },
         { word: "私はたいていTVを見ます", answer: "I usually watch TV." },
         {
           word: "私は時々友達を訪ねます",

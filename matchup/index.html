@@ -65,29 +65,28 @@
         height: 100dvh;
         overflow: hidden;
         background: linear-gradient(to bottom, #30b0c7, #40c8e0);
-
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
         font-family: "Trebuchet MS", "Verdana", sans-serif;
       }
 
-      /* decorative */
-      .leaf {
-        position: absolute;
-        font-size: clamp(30px, 6vw, 60px);
-        pointer-events: none;
-        z-index: 0;
+      /* PORTRAIT background */
+      @media (orientation: portrait) {
+        html,
+        body {
+          background-image: url("../images/bg_port4.png");
+        }
       }
-      .leaf1 {
-        top: 2%;
-        left: 2%;
+
+      /* LANDSCAPE background */
+      @media (orientation: landscape) {
+        html,
+        body {
+          background-image: url("../images/bg_land4.png");
+        }
       }
-      .leaf2 {
-        top: 1%;
-        right: 2%;
-      }
-      .leaf3 {
-        top: 8%;
-        left: 45%;
-      }
+
       /* layout */
       .wrap {
         position: relative;
@@ -223,7 +222,7 @@
     </style>
   </head>
   <body>
-    <a class="back-btn" href="../index.html" aria-label="Back">⬅</a>
+    <a class="back-btn" href="../games.html" aria-label="Back">⬅</a>
     <div class="rotate-msg">
       <p>🔄 Please rotate your device to portrait mode!</p>
     </div>

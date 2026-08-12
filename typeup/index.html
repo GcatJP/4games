@@ -14,7 +14,7 @@
     />
     <meta name="apple-mobile-web-app-title" content="Island Games" />
     <meta name="theme-color" content="#ffcc00" />
-    <title>Adventure Island 3 Games</title>
+    <title>Adventure Island 4 Games</title>
     <style>
       :root {
         --ocean-deep: #0e6e6e;
@@ -40,72 +40,26 @@
         height: 100dvh;
         overflow: hidden;
         background: linear-gradient(to bottom, #30b0c7, #40c8e0);
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
         font-family: "Trebuchet MS", "Verdana", sans-serif;
       }
 
-      /* decorative */
-      .sun {
-        position: absolute;
-        top: max(10px, env(safe-area-inset-top, 10px));
-        right: clamp(10px, 4vw, 40px);
-        width: clamp(40px, 8vw, 72px);
-        height: clamp(40px, 8vw, 72px);
-        border-radius: 50%;
-        background: radial-gradient(circle at 35% 35%, #ffefae, var(--sun) 70%);
-        box-shadow: 0 0 24px 8px rgba(255, 210, 63, 0.5);
-        pointer-events: none;
-        z-index: 0;
+      /* PORTRAIT background */
+      @media (orientation: portrait) {
+        html,
+        body {
+          background-image: url("../images/bg_port4.png");
+        }
       }
-      .cloud {
-        position: absolute;
-        background: rgba(255, 255, 255, 0.82);
-        border-radius: 50px;
-        pointer-events: none;
-        z-index: 0;
-      }
-      .cloud::before,
-      .cloud::after {
-        content: "";
-        position: absolute;
-        background: inherit;
-        border-radius: 50%;
-      }
-      .cloud1 {
-        top: 5%;
-        left: 5%;
-        width: 80px;
-        height: 26px;
-      }
-      .cloud1::before {
-        width: 40px;
-        height: 40px;
-        top: -18px;
-        left: 8px;
-      }
-      .cloud1::after {
-        width: 30px;
-        height: 30px;
-        top: -12px;
-        left: 42px;
-      }
-      .cloud2 {
-        top: 12%;
-        left: 55%;
-        width: 60px;
-        height: 20px;
-        opacity: 0.75;
-      }
-      .cloud2::before {
-        width: 30px;
-        height: 30px;
-        top: -14px;
-        left: 6px;
-      }
-      .cloud2::after {
-        width: 22px;
-        height: 22px;
-        top: -8px;
-        left: 32px;
+
+      /* LANDSCAPE background */
+      @media (orientation: landscape) {
+        html,
+        body {
+          background-image: url("../images/bg_land4.png");
+        }
       }
 
       /* layout */
@@ -267,7 +221,7 @@
     </style>
   </head>
   <body>
-    <a class="back-btn" href="../index.html" aria-label="Back">⬅</a>
+    <a class="back-btn" href="../games.html" aria-label="Back">⬅</a>
 
     <div class="rotate-msg">
       <p>🔄 Please rotate your device to portrait mode!</p>

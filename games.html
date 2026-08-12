@@ -56,9 +56,9 @@
 
       body {
         font-family: var(--font-chalk);
-        background: linear-gradient(to bottom, #bde55d, #4f7831);
+        background-color: #30b0c7;
         background-size: cover;
-        background-position: center center;
+        background-position: center;
         background-repeat: no-repeat;
         display: flex;
         flex-direction: column;
@@ -86,7 +86,6 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        min-height: 0;
       }
 
       .btn {
@@ -133,16 +132,38 @@
         pointer-events: none;
         user-select: none;
       }
-
+      .back-btn {
+        position: fixed;
+        top: max(16px, env(safe-area-inset-top, 16px));
+        left: max(16px, env(safe-area-inset-left, 16px));
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        background: var(--colour-btn-face);
+        color: var(--colour-btn-border);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 999px;
+        padding: 0.4em 0.9em;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-text-stroke: 0;
+        transition: transform 0.1s ease;
+      }
+      .back-btn:active {
+        transform: translateY(2px);
+        background: var(--colour-btn-active);
+      }
       /* LANDSCAPE */
       @media screen and (orientation: landscape) {
         body {
           background-image: url("images/bg_land4.png");
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
           overflow: hidden;
         }
+
         h1 {
           font-size: clamp(2rem, 7vw, 7rem);
           padding: 0.1em 0.5em;
@@ -157,25 +178,22 @@
 
         .grid {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(3, 1fr);
           grid-template-rows: 1fr;
-          gap: clamp(10px, 3vw, 30px);
-          width: min(90vw, 1000px);
+          gap: clamp(6px, 1.4vw, 16px);
+          width: min(96vw, 1300px);
         }
 
         .btn {
-          font-size: clamp(1rem, 5vw, 3.6rem);
-          height: clamp(90px, 45vh, 240px);
+          font-size: clamp(1rem, 4.5vw, 3.4rem);
+          height: clamp(80px, 45vh, 220px);
         }
       }
 
       /* LANDSCAPE IPHONE */
       @media screen and (orientation: landscape) and (max-height: 450px) {
         body {
-          background-image: url("images/bg-land4.png");
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
+          background-image: url("images/bg_land4.png");
           width: 100vw !important;
           min-width: 100vw !important;
           overflow-x: hidden !important;
@@ -189,17 +207,13 @@
         }
 
         .grid-wrapper {
-          padding: 1vh 6vw 2vh;
+          padding: 1vh 4vw 2vh;
           margin-top: 1vh;
         }
 
-        .grid {
-          gap: clamp(10px, 3vw, 24px) !important;
-        }
-
         .btn {
-          height: clamp(55px, 34vh, 140px) !important;
-          font-size: clamp(0.85rem, 4.5vw, 2.6rem) !important;
+          height: clamp(55px, 34vh, 130px) !important;
+          font-size: clamp(1rem, 6vw, 3.4rem) !important;
         }
       }
 
@@ -208,14 +222,12 @@
         body {
           overflow-y: auto;
           background-image: url("images/bg_port4.png");
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
         }
 
         h1 {
           font-size: clamp(1.5rem, 12vw, 4rem);
           padding: 0.3em 0.5em;
+          margin-top: max(20px, env(safe-area-inset-top, 20px));
         }
 
         .grid-wrapper {
@@ -225,26 +237,19 @@
         .grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: clamp(12px, 6vw, 60px);
+          gap: clamp(8px, 5vw, 50px);
           width: 100%;
           max-width: 520px;
         }
 
         .btn {
-          font-size: clamp(1.2rem, 10vw, 4rem);
-          height: clamp(90px, 26vw, 240px);
+          font-size: clamp(1.1rem, 9vw, 3.6rem);
+          height: clamp(80px, 30vw, 250px);
         }
       }
 
       /* PORTRAIT IPHONE */
       @media screen and (orientation: portrait) and (max-width: 430px) {
-        body {
-          overflow-y: auto;
-          background-image: url("images/bg_port4.png");
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
-        }
         h1 {
           font-size: clamp(1.1rem, 10.5vw, 3.9rem) !important;
           padding: 0.3em 0.5em !important;
@@ -257,14 +262,14 @@
         }
 
         .grid {
-          gap: 28px !important;
+          gap: 23px !important;
           width: 100% !important;
           margin-top: -5vh !important;
         }
 
         .btn {
-          height: clamp(90px, 34vw, 200px) !important;
-          font-size: clamp(1.1rem, 11vw, 3.4rem) !important;
+          height: clamp(80px, 30vw, 180px) !important;
+          font-size: clamp(1rem, 10vw, 3.1rem) !important;
         }
       }
     </style>
@@ -272,17 +277,32 @@
 
   <body>
     <h1>Adventure Island 4</h1>
-
+    <a class="back-btn" href="index.html">← Back</a>
     <div class="grid-wrapper">
       <div class="grid" id="main-grid">
-        <a class="btn" href="videos.html" style="background-color: #28756d">
-          <span class="btn-text">Videos</span>
-          <img class="btn-icon" src="images/v4.png" alt="" />
+        <a
+          class="btn"
+          href="typeup/index.html"
+          style="background-color: #007286"
+        >
+          <span class="btn-text">Type Up!</span>
+          <img class="btn-icon" src="images/kt4.png" alt="" />
         </a>
-
-        <a class="btn" href="games.html" style="background-color: #28756d">
-          <span class="btn-text">Games</span>
-          <img class="btn-icon" src="./images/g4.png" alt="" />
+        <a
+          class="btn"
+          href="matchup/index.html"
+          style="background-color: #007286"
+        >
+          <span class="btn-text">Match Up!</span>
+          <img class="btn-icon" src="images/sm4.png" alt="" />
+        </a>
+        <a
+          class="btn"
+          href="wordup/index.html"
+          style="background-color: #007286"
+        >
+          <span class="btn-text">Word Up!</span>
+          <img class="btn-icon" src="images/kw4.png" alt="" />
         </a>
       </div>
     </div>

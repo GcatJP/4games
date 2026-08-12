@@ -14,7 +14,10 @@
     <meta name="apple-mobile-web-app-title" content="Adventure Island" />
 
     <!-- App icons (multiple resolutions) -->
-    <link rel="apple-touch-icon" href="../images/home4.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/Ai4.180.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="images/Ai4.167.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="images/Ai4.152.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="images/Ai4.120.png" />
 
     <link rel="manifest" href="manifest.json" />
 
@@ -56,10 +59,7 @@
 
       body {
         font-family: var(--font-chalk);
-        background: linear-gradient(to bottom, #bde55d, #4f7831);
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
+        background: linear-gradient(to bottom, #6593f6, #08328c);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -86,7 +86,6 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        min-height: 0;
       }
 
       .btn {
@@ -100,14 +99,12 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        gap: 0.4em;
-        padding: 0 0.6em;
+        justify-content: center;
         width: 100%;
         overflow: hidden;
         -webkit-user-select: none;
         user-select: none;
-        -webkit-text-stroke: 2px darkorange;
+        -webkit-text-stroke: 2px orange;
         transition:
           transform 0.1s ease,
           background 0.15s ease;
@@ -117,21 +114,37 @@
         transform: scale(0.97);
         background: var(--colour-btn-active);
       }
-
-      .btn-text {
-        flex: 1;
-        text-align: center;
-        line-height: 1.05;
+      .back-btn {
+        position: fixed;
+        top: max(16px, env(safe-area-inset-top, 16px));
+        left: max(16px, env(safe-area-inset-left, 16px));
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        background: var(--colour-btn-face);
+        color: var(--colour-btn-border);
+        border: 2px solid var(--colour-btn-border);
+        border-radius: 999px;
+        padding: 0.4em 0.9em;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-text-stroke: 0;
+        transition: transform 0.1s ease;
       }
-
-      .btn-icon {
-        height: 78%;
-        width: auto;
-        aspect-ratio: 1 / 1;
-        flex-shrink: 0;
-        object-fit: contain;
+      .back-btn:active {
+        transform: translateY(2px);
+        background: var(--colour-btn-active);
+      }
+      .corner-img {
+        position: fixed;
+        bottom: 0;
+        right: 0;
         pointer-events: none;
-        user-select: none;
+        z-index: 10;
       }
 
       /* LANDSCAPE */
@@ -143,6 +156,7 @@
           background-repeat: no-repeat;
           overflow: hidden;
         }
+
         h1 {
           font-size: clamp(2rem, 7vw, 7rem);
           padding: 0.1em 0.5em;
@@ -159,20 +173,29 @@
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           grid-template-rows: 1fr;
-          gap: clamp(10px, 3vw, 30px);
-          width: min(90vw, 1000px);
+          gap: clamp(6px, 1.4vw, 16px);
+          width: min(94vw, 920px);
         }
 
         .btn {
-          font-size: clamp(1rem, 5vw, 3.6rem);
-          height: clamp(90px, 45vh, 240px);
+          font-size: clamp(1rem, 6vw, 4rem);
+          height: clamp(60px, 35vh, 180px);
+        }
+
+        .corner-img {
+          top: 0;
+          right: 0;
+          bottom: auto;
+          width: clamp(60px, 12vw, 160px);
+          margin-top: 30px;
+          margin-right: 30px;
         }
       }
 
       /* LANDSCAPE IPHONE */
       @media screen and (orientation: landscape) and (max-height: 450px) {
         body {
-          background-image: url("images/bg-land4.png");
+          background-image: url("images/bg_land4.png");
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
@@ -180,7 +203,6 @@
           min-width: 100vw !important;
           overflow-x: hidden !important;
         }
-
         h1 {
           font-size: clamp(1rem, 7vw, 4rem) !important;
           padding: 0.1em 0.5em !important;
@@ -193,13 +215,13 @@
           margin-top: 1vh;
         }
 
-        .grid {
-          gap: clamp(10px, 3vw, 24px) !important;
+        .btn {
+          height: clamp(40px, 28vh, 100px) !important;
+          font-size: clamp(0.9rem, 5vw, 3rem) !important;
         }
 
-        .btn {
-          height: clamp(55px, 34vh, 140px) !important;
-          font-size: clamp(0.85rem, 4.5vw, 2.6rem) !important;
+        .corner-img {
+          width: clamp(40px, 8vw, 80px);
         }
       }
 
@@ -219,72 +241,91 @@
         }
 
         .grid-wrapper {
-          padding: 2vw 9vw 6vw;
+          padding: 2vw 9vw 16vw;
         }
 
         .grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: clamp(12px, 6vw, 60px);
+          gap: clamp(10px, 10vw, 100px);
           width: 100%;
-          max-width: 520px;
+          max-width: 480px;
         }
 
         .btn {
-          font-size: clamp(1.2rem, 10vw, 4rem);
-          height: clamp(90px, 26vw, 240px);
+          font-size: clamp(1rem, 10vw, 4rem);
+          height: clamp(70px, 30vw, 300px);
+        }
+
+        .corner-img {
+          width: clamp(60px, 20vw, 130px);
+          margin-bottom: 30px;
+          margin-right: 30px;
         }
       }
 
       /* PORTRAIT IPHONE */
       @media screen and (orientation: portrait) and (max-width: 430px) {
-        body {
-          overflow-y: auto;
-          background-image: url("images/bg_port4.png");
-          background-size: cover;
-          background-position: center center;
-          background-repeat: no-repeat;
+        .corner-img {
+          width: clamp(30px, 13vw, 80px) !important;
         }
+
         h1 {
-          font-size: clamp(1.1rem, 10.5vw, 3.9rem) !important;
+          font-size: clamp(1.2rem, 12vw, 4rem) !important;
           padding: 0.3em 0.5em !important;
+          -webkit-text-stroke: 1.5px yellow;
           line-height: 1;
-          margin-top: max(40px, env(safe-area-inset-top, 30px)) !important;
         }
 
         .grid-wrapper {
-          padding: 3.5vh 9vw 2vw !important;
+          padding: 0 9vw 2vw !important;
+          margin-top: 0 !important;
+          align-items: flex-start !important;
+          justify-content: flex-start !important;
+          flex-direction: column !important;
+          padding-top: 5vh !important;
         }
 
         .grid {
-          gap: 28px !important;
+          gap: 30px !important;
           width: 100% !important;
-          margin-top: -5vh !important;
         }
 
         .btn {
-          height: clamp(90px, 34vw, 200px) !important;
-          font-size: clamp(1.1rem, 11vw, 3.4rem) !important;
+          height: clamp(70px, 25vw, 120px) !important;
+          font-size: clamp(0.9rem, 10vw, 3rem) !important;
         }
       }
     </style>
   </head>
 
   <body>
+    <a class="back-btn" href="index.html">← Back</a>
     <h1>Adventure Island 4</h1>
-
     <div class="grid-wrapper">
       <div class="grid" id="main-grid">
-        <a class="btn" href="videos.html" style="background-color: #28756d">
-          <span class="btn-text">Videos</span>
-          <img class="btn-icon" src="images/v4.png" alt="" />
+        <a
+          class="btn"
+          href="Units4_1-10.html"
+          style="background-color: #28756d"
+        >
+          Units 1–10
         </a>
-
-        <a class="btn" href="games.html" style="background-color: #28756d">
-          <span class="btn-text">Games</span>
-          <img class="btn-icon" src="./images/g4.png" alt="" />
+        <a
+          class="btn"
+          href="Units4_11-20.html"
+          style="background-color: #28756d"
+        >
+          Units 11–20
         </a>
       </div>
     </div>
+
+    <img
+      class="corner-img"
+      src="images/Kevin4.2.png"
+      alt=""
+      aria-hidden="true"
+    />
   </body>
 </html>

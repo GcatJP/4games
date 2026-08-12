@@ -45,7 +45,25 @@
         --colour-btn-border: #000000;
         --colour-heading-text: orange;
       }
-
+      .rotate-message {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #30b0c7;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2em;
+      }
+      .rotate-message p {
+        color: var(--colour-heading-text);
+        -webkit-text-stroke: 0.8px darkorange;
+        font-family: var(--font-chalk);
+        font-weight: bold;
+        font-size: clamp(1.2rem, 6vw, 2rem);
+        line-height: 1.4;
+      }
       html,
       body {
         width: 100%;
@@ -178,10 +196,11 @@
 
         .grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          grid-template-rows: 1fr;
-          gap: clamp(6px, 1.4vw, 16px);
-          width: min(96vw, 1300px);
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: repeat(2, 1fr);
+          gap: clamp(10px, 2vw, 24px);
+          width: min(85vw, 900px);
+          height: min(70vh, 460px);
         }
 
         .btn {
@@ -192,6 +211,16 @@
 
       /* LANDSCAPE IPHONE */
       @media screen and (orientation: landscape) and (max-height: 450px) {
+        .rotate-message {
+          display: flex;
+        }
+
+        h1,
+        .grid-wrapper,
+        .back-btn {
+          display: none;
+        }
+
         body {
           background-image: url("images/bg_land4.png");
           width: 100vw !important;
@@ -199,16 +228,17 @@
           overflow-x: hidden !important;
         }
 
-        h1 {
-          font-size: clamp(1rem, 7vw, 4rem) !important;
-          padding: 0.1em 0.5em !important;
-          margin-top: -3vh !important;
-          margin-bottom: -8vh !important;
-        }
-
         .grid-wrapper {
           padding: 1vh 4vw 2vh;
           margin-top: 1vh;
+        }
+
+        .grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          grid-template-rows: repeat(2, 1fr) !important;
+          width: min(92vw, 500px) !important;
+          height: min(80vh, 220px) !important;
+          gap: clamp(6px, 1.5vw, 14px) !important;
         }
 
         .btn {
@@ -261,12 +291,6 @@
           padding: 3.5vh 9vw 2vw !important;
         }
 
-        .grid {
-          gap: 23px !important;
-          width: 100% !important;
-          margin-top: -5vh !important;
-        }
-
         .btn {
           height: clamp(80px, 30vw, 180px) !important;
           font-size: clamp(1rem, 10vw, 3.1rem) !important;
@@ -276,6 +300,9 @@
   </head>
 
   <body>
+    <div class="rotate-message">
+      <p>🔄 Please rotate your device to portrait mode!</p>
+    </div>
     <h1>Adventure Island 4</h1>
     <a class="back-btn" href="index.html">← Back</a>
     <div class="grid-wrapper">
@@ -303,6 +330,14 @@
         >
           <span class="btn-text">Word Up!</span>
           <img class="btn-icon" src="images/kw4.png" alt="" />
+        </a>
+        <a
+          class="btn"
+          href="sentencebuilder/index.html"
+          style="background-color: #007286"
+        >
+          <span class="btn-text">Sentence Builder</span>
+          <img class="btn-icon" src="images/sb4.png" alt="" />
         </a>
       </div>
     </div>

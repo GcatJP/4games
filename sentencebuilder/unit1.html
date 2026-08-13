@@ -42,6 +42,16 @@
         --good: #4caf7d;
         --bad: #e0483c;
       }
+      .cloud {
+        position: absolute;
+        top: max(20px, env(safe-area-inset-top, 20px));
+        right: clamp(8px, 4vw, 36px);
+        width: clamp(70px, 14vw, 130px);
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+        z-index: 0;
+      }
       .rotate-message {
         display: none;
         position: fixed;
@@ -473,7 +483,7 @@
         "Where do you live ?",
         "What grade are you in ?",
         "What's your favorite subject ?",
-        "Do you eat carrots ? ?",
+        "Do you eat carrots ?",
         "Do you like homework ?",
         "Can you swim ?",
         "What are you wearing ?",

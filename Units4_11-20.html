@@ -1,19 +1,5 @@
 <!doctype html>
 <html lang="en">
-  <!-- ============================================================
-     ADVENTURE ISLAND — units.html
-     ============================================================
-     CUSTOMISE THIS SECTION:
-       • units[]  — label, url, colour for each button
-       • --bg     — background gradient (one line, same everywhere)
-
-     GRID LAYOUT:
-       • Landscape tablet/desktop → 5 × 4
-       • Landscape iPhone         → 4 × 5
-       • Portrait tablet/desktop  → 2 × 10
-       • Portrait iPhone          → 2 × 10
-     ============================================================ -->
-
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -56,17 +42,18 @@
 
       body {
         font-family: var(--font-chalk);
-        background: var(--bg);
+        background-color: #30b0c7;
         background-size: cover;
-        background-position: center center;
+        background-position: center;
         background-repeat: no-repeat;
-        width: 100%;
-        max-width: 100vw;
-        height: 100vh;
-        height: 100dvh;
-        overflow: hidden;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+        transition: background 0.3s ease;
       }
 
       /* ----------------------------------------------------------

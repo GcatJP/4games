@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Unit 20. Review | Adventure Island 4</title>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --font-jp:
+          "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        --green-bg: #30b0c7;
+        --green-panel: #fffdf8;
+        --yellow-btn: #ff7b54;
+        --yellow-btn-active: #c2522f;
+        --heading: #0e6e6e;
+        --sun: #ffd23f;
+        --ocean: #1e97a0;
+        --ocean-light: #54c7c9;
+        --sand: #f6e3b4;
+        --correct: #5fd66a;
+        --wrong: #ff7b54;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        font-family: var(--font-jp);
+        background: var(--green-bg);
+        background-image: linear-gradient(180deg, #30b0c7 0%, #40c8e0 100%);
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 14px 60px;
+      }
+
+      h1.page-title {
+        font-family: var(--font-chalk);
+        color: var(--sun);
+        -webkit-text-stroke: 1.5px var(--heading);
+        text-align: center;
+        font-size: clamp(1.4rem, 6vw, 2.4rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 18px;
+      }
+      .back-btn {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--green-panel);
+        background: var(--yellow-btn);
+        border: 3px solid var(--yellow-btn-active);
+        border-radius: 999px;
+        padding: 8px 16px;
+        text-decoration: none;
+        z-index: 10;
+        box-shadow: 0 3px 0 var(--yellow-btn-active);
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .back-btn:active {
+        transform: scale(0.96);
+        background: var(--yellow-btn-active);
+      }
+
+      @media (max-width: 480px) {
+        .back-btn {
+          top: 10px;
+          left: 10px;
+          padding: 6px 12px;
+          font-size: 0.85rem;
+        }
+      }
+      #app {
+        width: 100%;
+        max-width: 640px;
+        background: var(--green-panel);
+        border-radius: 22px;
+        border: 4px solid var(--ocean);
+        box-shadow:
+          0 8px 0 var(--heading),
+          0 14px 24px rgba(0, 0, 0, 0.25);
+        padding: 22px 18px 26px;
+      }
+
+      .badge {
+        display: inline-block;
+        background: var(--heading);
+        color: #fff;
+        font-family: var(--font-chalk);
+        font-size: 0.9rem;
+        padding: 4px 14px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+
+      h2.section-title {
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.2rem, 5vw, 1.7rem);
+        margin-bottom: 14px;
+        border-bottom: 3px dashed var(--sun);
+        padding-bottom: 8px;
+      }
+
+      p.jp {
+        font-size: clamp(1rem, 4vw, 1.15rem);
+        line-height: 1.9;
+        color: #333;
+        margin-bottom: 14px;
+      }
+
+      .en {
+        color: var(--ocean);
+        font-family: var(--font-chalk);
+        font-weight: 700;
+      }
+
+      /* --- vocab grid on explanation screen --- */
+      .vocab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        margin: 16px 0 22px;
+      }
+
+      .vocab-card {
+        border: 3px solid #333;
+        border-radius: 14px;
+        overflow: hidden;
+        text-align: center;
+        background: #fff;
+      }
+
+      .icon-box {
+        height: 64px;
+        border-bottom: 3px solid #333;
+        background: #eaf7f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+      }
+
+      .icon-box img,
+      .quiz-icon img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .vocab-card .label {
+        padding: 6px 4px;
+        line-height: 1.3;
+      }
+
+      .vocab-card .en-word {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: #333;
+        font-size: 1.05rem;
+      }
+
+      .vocab-card .jp-word {
+        font-size: 0.85rem;
+        color: #555;
+      }
+
+      .pattern-box {
+        background: #fff6e0;
+        border: 3px dashed var(--sun);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+
+      .pattern-box .line {
+        font-family: var(--font-chalk);
+        font-size: clamp(1rem, 4.5vw, 1.3rem);
+        color: #333;
+        margin: 4px 0;
+      }
+
+      .pattern-box .line .jp-sub {
+        display: block;
+        font-family: var(--font-jp);
+        font-size: 0.85rem;
+        color: #777;
+        margin-top: 2px;
+      }
+
+      .review-list {
+        background: #fff6e0;
+        border: 3px dashed var(--sun);
+        border-radius: 14px;
+        padding: 6px 16px;
+        margin: 12px 0;
+      }
+
+      .review-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 8px;
+        padding: 8px 0;
+        border-bottom: 1px dashed #f0d999;
+      }
+
+      .review-row:last-child {
+        border-bottom: none;
+      }
+
+      .review-unit {
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: 0.85rem;
+        flex-shrink: 0;
+        min-width: 52px;
+      }
+
+      .review-en {
+        font-family: var(--font-chalk);
+        color: #333;
+        font-size: clamp(0.85rem, 3.5vw, 1rem);
+      }
+
+      .note-box {
+        background: #eaf4ff;
+        border: 3px dashed var(--ocean-light);
+        border-radius: 14px;
+        padding: 12px 16px;
+        margin-bottom: 18px;
+      }
+
+      .note-box .jp {
+        margin-bottom: 0;
+        font-size: 0.98rem;
+      }
+
+      /* --- buttons --- */
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: var(--green-panel);
+        background: var(--yellow-btn);
+        border: 3px solid #333;
+        border-radius: 12px;
+        cursor: pointer;
+        padding: 12px 18px;
+        font-size: clamp(1rem, 4.5vw, 1.2rem);
+        width: 100%;
+        display: block;
+        text-align: center;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+        background: var(--yellow-btn-active);
+      }
+
+      .btn-primary {
+        max-width: 260px;
+        margin: 8px auto 0;
+      }
+
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+      }
+
+      /* --- quiz screens --- */
+      .progress {
+        font-family: var(--font-chalk);
+        color: #777;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+      }
+
+      .quiz-icon {
+        width: 140px;
+        height: 110px;
+        margin: 0 auto 16px;
+        border: 4px solid #333;
+        border-radius: 16px;
+        background: #eaf7f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+      }
+
+      .quiz-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .question-jp {
+        text-align: center;
+        font-size: clamp(1.05rem, 4.5vw, 1.3rem);
+        margin-bottom: 4px;
+        color: #333;
+      }
+
+      .question-en {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+        margin-bottom: 18px;
+      }
+
+      .speak-btn {
+        background: var(--heading);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: clamp(30px, 7vw, 38px);
+        height: clamp(30px, 7vw, 38px);
+        font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        padding: 0;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .speak-btn:active {
+        transform: scale(0.88);
+        background: #0a5555;
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      @media (max-width: 420px) {
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .opt-btn {
+        font-family: var(--font-chalk);
+        font-size: clamp(0.95rem, 4vw, 1.15rem);
+        font-weight: 700;
+        background: #fff;
+        border: 3px solid #333;
+        border-radius: 12px;
+        padding: 14px 8px;
+        cursor: pointer;
+        color: #333;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .opt-btn:active {
+        transform: scale(0.97);
+      }
+
+      .opt-btn.correct {
+        background: var(--correct);
+        color: #fff;
+        border-color: #256b32;
+      }
+
+      .opt-btn.wrong {
+        background: var(--wrong);
+        color: #fff;
+        border-color: #a12c22;
+      }
+
+      .opt-btn[disabled] {
+        cursor: default;
+      }
+
+      .feedback {
+        text-align: center;
+        font-family: var(--font-chalk);
+        font-size: 1.1rem;
+        min-height: 1.6em;
+        margin-bottom: 8px;
+      }
+
+      .feedback.good {
+        color: var(--correct);
+      }
+
+      .feedback.bad {
+        color: var(--wrong);
+      }
+
+      /* --- result screen --- */
+      .result-emoji {
+        font-size: 3.2rem;
+        text-align: center;
+        margin-bottom: 6px;
+      }
+      .result-icon {
+        height: clamp(50px, 14vw, 90px);
+        width: auto;
+      }
+
+      .result-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .result-score {
+        text-align: center;
+        font-family: var(--font-chalk);
+        font-size: 1.6rem;
+        color: var(--heading);
+        margin-bottom: 10px;
+      }
+
+      .result-msg {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 18px;
+      }
+
+      .center-text {
+        text-align: center;
+      }
+
+      .quiz-label {
+        display: inline-block;
+        font-family: var(--font-chalk);
+        background: #e3f4f4;
+        color: var(--heading);
+        border: 2px solid var(--ocean);
+        border-radius: 999px;
+        padding: 3px 12px;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 class="page-title">Unit 20：Review</h1>
+    <a class="back-btn" href="index.html">← Back</a>
+    <div id="app"></div>
+
+    <script>
+      const IMG_PATH = "../images/";
+
+      function iconSvg(key) {
+        return `<img src="${IMG_PATH}${key}.png" alt="${key}" />`;
+      }
+
+      const UNIT11_ITEMS = [
+        {
+          en: "put on my coat",
+          base: "put",
+          rest: "on my coat",
+          jp: "コートを きる",
+          key: "put_on",
+        },
+        {
+          en: "use a tablet",
+          base: "use",
+          rest: "a tablet",
+          jp: "タブレットを つかう",
+          key: "use_tablet",
+        },
+        {
+          en: "take off my boots",
+          base: "take",
+          rest: "off my boots",
+          jp: "ブーツを ぬぐ",
+          key: "take_off",
+        },
+        {
+          en: "turn off the light",
+          base: "turn",
+          rest: "off the light",
+          jp: "でんきを けす",
+          key: "turn_off",
+        },
+        { en: "sleep", base: "sleep", rest: "", jp: "ねる", key: "sleep" },
+        {
+          en: "read a book",
+          base: "read",
+          rest: "a book",
+          jp: "ほんを よむ",
+          key: "read_book",
+        },
+      ];
+      const UNIT12_ITEMS = [
+        {
+          en: "watching TV",
+          ing: "watching",
+          rest: "TV",
+          jp: "テレビを みる",
+          key: "watch_tv",
+        },
+        {
+          en: "reading a book",
+          ing: "reading",
+          rest: "a book",
+          jp: "ほんを よむ",
+          key: "read_book",
+        },
+        {
+          en: "doing homework",
+          ing: "doing",
+          rest: "homework",
+          jp: "しゅくだいを する",
+          key: "do_homework",
+        },
+        {
+          en: "eating a steak",
+          ing: "eating",
+          rest: "a steak",
+          jp: "ステーキを たべる",
+          key: "eat",
+        },
+        {
+          en: "drinking juice",
+          ing: "drinking",
+          rest: "juice",
+          jp: "ジュースを のむ",
+          key: "drink",
+        },
+        {
+          en: "cooking dinner",
+          ing: "cooking",
+          rest: "dinner",
+          jp: "ばんごはんを つくる",
+          key: "cook",
+        },
+        {
+          en: "going to school",
+          ing: "going",
+          rest: "to school",
+          jp: "がっこうに いく",
+          key: "go_to_school",
+        },
+        {
+          en: "drawing a picture",
+          ing: "drawing",
+          rest: "a picture",
+          jp: "えを かく",
+          key: "draw",
+        },
+        {
+          en: "playing a board game",
+          ing: "playing",
+          rest: "a board game",
+          jp: "ボードゲームを する",
+          key: "play_game",
+        },
+        {
+          en: "borrowing a pencil",
+          ing: "borrowing",
+          rest: "a pencil",
+          jp: "えんぴつを かりる",
+          key: "borrow_pencil",
+        },
+      ];
+      const UNIT13_ITEMS = [
+        { en: "always", jp: "いつも", key: "freq_always" },
+        { en: "usually", jp: "たいてい", key: "freq_usually" },
+        { en: "sometimes", jp: "ときどき", key: "freq_sometimes" },
+        { en: "never", jp: "ぜんぜん〜ない", key: "freq_never" },
+      ];
+      const UNIT13_ACTIVITIES = [
+        "cook",
+        "do homework",
+        "drink milk",
+        "message my friends",
+        "go running",
+        "watch TV",
+        "take a bath",
+        "ride a bike",
+        "drive a car",
+      ];
+      const UNIT14_ITEMS = [
+        {
+          en: "bring my dog",
+          base: "bring",
+          rest: "my dog",
+          jp: "いぬを つれてくる",
+          key: "bring",
+        },
+        {
+          en: "pull a sled",
+          base: "pull",
+          rest: "a sled",
+          jp: "そりを ひく",
+          key: "pull",
+        },
+        {
+          en: "push a sled",
+          base: "push",
+          rest: "a sled",
+          jp: "そりを おす",
+          key: "push",
+        },
+        {
+          en: "speak to my friends",
+          base: "speak to",
+          rest: "my friends",
+          jp: "ともだちと はなす",
+          key: "speak_to",
+        },
+        {
+          en: "borrow a sled",
+          base: "borrow",
+          rest: "a sled",
+          jp: "そりを かりる",
+          key: "borrow",
+        },
+        {
+          en: "stay at my grandma's house",
+          base: "stay",
+          rest: "at my grandma's house",
+          jp: "おばあちゃんの いえに とまる",
+          key: "stay",
+        },
+        {
+          en: "visit my grandma",
+          base: "visit",
+          rest: "my grandma",
+          jp: "おばあちゃんを たずねる",
+          key: "visit",
+        },
+      ];
+      const UNIT15_ITEMS = [
+        {
+          en: "speak to my friends",
+          base: "speak to",
+          rest: "my friends",
+          jp: "ともだちと はなす",
+          key: "speak_to",
+        },
+        {
+          en: "listen to music",
+          base: "listen to",
+          rest: "music",
+          jp: "おんがくを きく",
+          key: "listen_to",
+        },
+        {
+          en: "do homework",
+          base: "do",
+          rest: "homework",
+          jp: "しゅくだいを する",
+          key: "do_homework",
+        },
+        {
+          en: "clean my room",
+          base: "clean",
+          rest: "my room",
+          jp: "へやを そうじする",
+          key: "clean",
+        },
+        {
+          en: "make dinner",
+          base: "make",
+          rest: "dinner",
+          jp: "ばんごはんを つくる",
+          key: "make",
+        },
+        {
+          en: "study English",
+          base: "study",
+          rest: "English",
+          jp: "えいごを べんきょうする",
+          key: "study",
+        },
+        {
+          en: "go to the mountains",
+          base: "go to",
+          rest: "the mountains",
+          jp: "やまに いく",
+          key: "go_to",
+        },
+        {
+          en: "look at the stars",
+          base: "look at",
+          rest: "the stars",
+          jp: "ほしを みる",
+          key: "look_at",
+        },
+        {
+          en: "close the window",
+          base: "close",
+          rest: "the window",
+          jp: "まどを しめる",
+          key: "close",
+        },
+        {
+          en: "drink juice",
+          base: "drink",
+          rest: "juice",
+          jp: "ジュースを のむ",
+          key: "drink",
+        },
+      ];
+      const UNIT16_ITEMS = [
+        { en: "yesterday", tense: "past", jp: "きのう", key: "time_yesterday" },
+        { en: "today", tense: "present", jp: "きょう", key: "time_today" },
+        { en: "tomorrow", tense: "future", jp: "あした", key: "time_tomorrow" },
+        {
+          en: "last week",
+          tense: "past",
+          jp: "せんしゅう",
+          key: "time_last_week",
+        },
+        {
+          en: "this week",
+          tense: "present",
+          jp: "こんしゅう",
+          key: "time_this_week",
+        },
+        {
+          en: "next week",
+          tense: "future",
+          jp: "らいしゅう",
+          key: "time_next_week",
+        },
+        {
+          en: "last month",
+          tense: "past",
+          jp: "せんげつ",
+          key: "time_last_month",
+        },
+        {
+          en: "this month",
+          tense: "present",
+          jp: "こんげつ",
+          key: "time_this_month",
+        },
+        {
+          en: "next month",
+          tense: "future",
+          jp: "らいげつ",
+          key: "time_next_month",
+        },
+        {
+          en: "last year",
+          tense: "past",
+          jp: "きょねん",
+          key: "time_last_year",
+        },
+        {
+          en: "this year",
+          tense: "present",
+          jp: "ことし",
+          key: "time_this_year",
+        },
+        {
+          en: "next year",
+          tense: "future",
+          jp: "らいねん",
+          key: "time_next_year",
+        },
+      ];
+      const UNIT17_ITEMS = [
+        {
+          en: "watched a movie",
+          past: "watched",
+          rest: "a movie",
+          jp: "えいがを みた",
+          key: "watch",
+        },
+        {
+          en: "played soccer",
+          past: "played",
+          rest: "soccer",
+          jp: "サッカーを した",
+          key: "play",
+        },
+        {
+          en: "cooked pasta",
+          past: "cooked",
+          rest: "pasta",
+          jp: "パスタを つくった",
+          key: "cook",
+        },
+        {
+          en: "listened to music",
+          past: "listened to",
+          rest: "music",
+          jp: "おんがくを きいた",
+          key: "listen_to",
+        },
+        {
+          en: "washed the dishes",
+          past: "washed",
+          rest: "the dishes",
+          jp: "さらを あらった",
+          key: "wash",
+        },
+        {
+          en: "called my friends",
+          past: "called",
+          rest: "my friends",
+          jp: "ともだちに でんわした",
+          key: "call",
+        },
+        {
+          en: "cleaned my room",
+          past: "cleaned",
+          rest: "my room",
+          jp: "へやを そうじした",
+          key: "clean",
+        },
+        {
+          en: "studied English",
+          past: "studied",
+          rest: "English",
+          jp: "えいごを べんきょうした",
+          key: "study",
+        },
+        {
+          en: "started my homework",
+          past: "started",
+          rest: "my homework",
+          jp: "しゅくだいを はじめた",
+          key: "start",
+        },
+        {
+          en: "finished my homework",
+          past: "finished",
+          rest: "my homework",
+          jp: "しゅくだいを おわった",
+          key: "finish",
+        },
+        {
+          en: "visited my grandma",
+          past: "visited",
+          rest: "my grandma",
+          jp: "おばあちゃんを たずねた",
+          key: "visit",
+        },
+        {
+          en: "messaged my friends",
+          past: "messaged",
+          rest: "my friends",
+          jp: "ともだちに メッセージを おくった",
+          key: "message",
+        },
+        {
+          en: "opened the door",
+          past: "opened",
+          rest: "the door",
+          jp: "ドアを あけた",
+          key: "open",
+        },
+        {
+          en: "closed the window",
+          past: "closed",
+          rest: "the window",
+          jp: "まどを しめた",
+          key: "close",
+        },
+        {
+          en: "stayed at home",
+          past: "stayed",
+          rest: "at home",
+          jp: "いえに いた",
+          key: "stay",
+        },
+        {
+          en: "relaxed",
+          past: "relaxed",
+          rest: "",
+          jp: "リラックスした",
+          key: "relax",
+        },
+      ];
+      const UNIT18_ITEMS = [
+        {
+          en: "ate pizza",
+          past: "ate",
+          rest: "pizza",
+          jp: "ピザを たべた",
+          key: "eat",
+        },
+        {
+          en: "drank juice",
+          past: "drank",
+          rest: "juice",
+          jp: "ジュースを のんだ",
+          key: "drink",
+        },
+        {
+          en: "read a book",
+          past: "read",
+          rest: "a book",
+          jp: "ほんを よんだ",
+          key: "read_book",
+        },
+        {
+          en: "drew a picture",
+          past: "drew",
+          rest: "a picture",
+          jp: "えを かいた",
+          key: "draw",
+        },
+        {
+          en: "went to the mountains",
+          past: "went to",
+          rest: "the mountains",
+          jp: "やまに いった",
+          key: "go_to",
+        },
+        {
+          en: "did my homework",
+          past: "did",
+          rest: "my homework",
+          jp: "しゅくだいを した",
+          key: "do_homework",
+        },
+        { en: "ran", past: "ran", rest: "", jp: "はしった", key: "run" },
+        { en: "sat", past: "sat", rest: "", jp: "すわった", key: "sit" },
+        {
+          en: "won the game",
+          past: "won",
+          rest: "the game",
+          jp: "しあいに かった",
+          key: "win",
+        },
+        {
+          en: "lost the game",
+          past: "lost",
+          rest: "the game",
+          jp: "しあいに まけた",
+          key: "lose",
+        },
+        {
+          en: "met my friends",
+          past: "met",
+          rest: "my friends",
+          jp: "ともだちと あった",
+          key: "meet",
+        },
+        {
+          en: "rode a bike",
+          past: "rode",
+          rest: "a bike",
+          jp: "じてんしゃに のった",
+          key: "ride_bike",
+        },
+      ];
+      const PAST_TIME_EXPR = [
+        "yesterday",
+        "last night",
+        "last year",
+        "last week",
+        "this morning",
+        "2 days ago",
+      ];
+      const UNIT19_ITEMS = [
+        { en: "once a day", jp: "1にちに いっかい", key: "once_day" },
+        { en: "once a week", jp: "1しゅうかんに いっかい", key: "once_week" },
+        { en: "twice a week", jp: "1しゅうかんに にかい", key: "twice_week" },
+        {
+          en: "three times a week",
+          jp: "1しゅうかんに さんかい",
+          key: "three_times_week",
+        },
+        { en: "once a month", jp: "1かげつに いっかい", key: "once_month" },
+        {
+          en: "four times a month",
+          jp: "1かげつに よんかい",
+          key: "four_times_month",
+        },
+        { en: "once a year", jp: "1ねんに いっかい", key: "once_year" },
+        {
+          en: "six times a year",
+          jp: "1ねんに ろっかい",
+          key: "six_times_year",
+        },
+      ];
+      const UNIT19_ACTIVITIES = [
+        "play video games",
+        "clean the bathroom",
+        "eat sandwiches",
+        "call my friends",
+        "use a computer",
+        "make paper airplanes",
+        "go to a museum",
+        "drink coffee",
+      ];
+
+      // Combined pool - every word from Units 11-19 (not rendered as a grid on
+      // this review page, but kept here in case it's useful later).
+      const ITEMS = [
+        ...UNIT11_ITEMS,
+        ...UNIT12_ITEMS,
+        ...UNIT13_ITEMS,
+        ...UNIT14_ITEMS,
+        ...UNIT15_ITEMS,
+        ...UNIT16_ITEMS,
+        ...UNIT17_ITEMS,
+        ...UNIT18_ITEMS,
+        ...UNIT19_ITEMS,
+      ];
+
+      // Shared helper for Units 17 & 18: "I watched a movie yesterday." /
+      // "I ate pizza yesterday." -- both are just [subject] + [past phrase] + [time].
+      function pastSentence(item, time) {
+        const parts = ["I", item.past];
+        if (item.rest) parts.push(item.rest);
+        parts.push(time);
+        return parts.join(" ").replace(/\s+\./, ".") + ".";
+      }
+
+      // Every sentence pattern taught in Units 11-19, each paired with its own item bank so
+      // distractors stay meaningful (e.g. past-tense verbs only compete against other verbs).
+      const PATTERNS = [
+        {
+          // Unit 11: In the morning (present simple, I / He + verb-s)
+          items: UNIT11_ITEMS,
+          randomExtra: () => (Math.random() < 0.5 ? "I" : "He"),
+          sentence: (item, extra) => {
+            const verb = extra === "He" ? item.base + "s" : item.base;
+            const parts = [extra, verb];
+            if (item.rest) parts.push(item.rest);
+            return parts.join(" ") + ".";
+          },
+        },
+        {
+          // Unit 12: She's watching TV. (present continuous)
+          items: UNIT12_ITEMS,
+          randomExtra: () =>
+            [
+              { pronoun: "I", aux: "'m" },
+              { pronoun: "She", aux: "'s" },
+              { pronoun: "They", aux: "'re" },
+            ][Math.floor(Math.random() * 3)],
+          sentence: (item, extra) =>
+            `${extra.pronoun}${extra.aux} ${item.ing} ${item.rest}.`.trim(),
+        },
+        {
+          // Unit 13: I sometimes cook. (frequency adverbs, mid-position)
+          items: UNIT13_ITEMS,
+          randomExtra: () =>
+            UNIT13_ACTIVITIES[
+              Math.floor(Math.random() * UNIT13_ACTIVITIES.length)
+            ],
+          sentence: (item, extra) => `I ${item.en} ${extra}.`,
+        },
+        {
+          // Unit 14: I'm going to visit my grandma. (affirmative)
+          items: UNIT14_ITEMS,
+          randomExtra: () =>
+            [
+              { pronoun: "I", aux: "'m" },
+              { pronoun: "She", aux: "'s" },
+              { pronoun: "They", aux: "'re" },
+            ][Math.floor(Math.random() * 3)],
+          sentence: (item, extra) =>
+            `${extra.pronoun}${extra.aux} going to ${item.base} ${item.rest}.`.trim(),
+        },
+        {
+          // Unit 15: I'm not going to study. (negative)
+          items: UNIT15_ITEMS,
+          randomExtra: () =>
+            [
+              { pronoun: "I", neg: "'m not" },
+              { pronoun: "She", neg: "isn't" },
+              { pronoun: "They", neg: "aren't" },
+            ][Math.floor(Math.random() * 3)],
+          sentence: (item, extra) =>
+            `${extra.pronoun} ${extra.neg} going to ${item.base} ${item.rest}.`.trim(),
+        },
+        {
+          // Unit 16: What is the date today? (is / was / will be)
+          items: UNIT16_ITEMS,
+          randomExtra: () => null,
+          sentence: (item) => {
+            if (item.tense === "past") return `What was the date ${item.en}?`;
+            if (item.tense === "future")
+              return `What will the date be ${item.en}?`;
+            return `What is the date ${item.en}?`;
+          },
+        },
+        {
+          // Unit 17: I played soccer yesterday. (regular past tense)
+          items: UNIT17_ITEMS,
+          randomExtra: () =>
+            PAST_TIME_EXPR[Math.floor(Math.random() * PAST_TIME_EXPR.length)],
+          sentence: (item, extra) => pastSentence(item, extra),
+        },
+        {
+          // Unit 18: I ate pizza last week. (irregular past tense)
+          items: UNIT18_ITEMS,
+          randomExtra: () =>
+            PAST_TIME_EXPR[Math.floor(Math.random() * PAST_TIME_EXPR.length)],
+          sentence: (item, extra) => pastSentence(item, extra),
+        },
+        {
+          // Unit 19: I read twice a week. (frequency of occurrence, end position)
+          items: UNIT19_ITEMS,
+          randomExtra: () =>
+            UNIT19_ACTIVITIES[
+              Math.floor(Math.random() * UNIT19_ACTIVITIES.length)
+            ],
+          sentence: (item, extra) => `I ${extra} ${item.en}.`,
+        },
+      ];
+      function randomPattern() {
+        return PATTERNS[Math.floor(Math.random() * PATTERNS.length)];
+      }
+
+      // Shows an emoji (Unit 7 items) or a real image icon (every other unit).
+      function quizIconHtml(q) {
+        return q.iconEmoji
+          ? `<span style="font-size:3rem; line-height:1;">${q.iconEmoji}</span>`
+          : iconSvg(q.iconKey);
+      }
+
+      /* ---------------- helpers ---------------- */
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function sample(arr, n) {
+        return shuffle(arr).slice(0, n);
+      }
+      function speakText(text) {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "en-US";
+        utter.rate = 0.85;
+        window.speechSynthesis.speak(utter);
+      }
+      function speakPattern(el) {
+        const lines = [...el.querySelectorAll(".line")].map((line) => {
+          const clone = line.cloneNode(true);
+          clone.querySelector(".jp-sub")?.remove();
+          return clone.textContent.trim();
+        });
+        speakText(lines.join(". "));
+      }
+      /* ---- audio ---- */
+      let audioCtx = null;
+      function getCtx() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        return audioCtx;
+      }
+      function playTone(freq, startTime, duration, gainPeak) {
+        const ctx = getCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(gainPeak, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        osc.start(startTime);
+        osc.stop(startTime + duration + 0.02);
+      }
+      function playCorrectJingle() {
+        const ctx = getCtx(),
+          now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
+          playTone(f, now + i * 0.09, 0.22, 0.22),
+        );
+      }
+      function playWrongSound() {
+        const ctx = getCtx(),
+          now = ctx.currentTime;
+        playTone(220, now, 0.18, 0.12);
+        playTone(196, now + 0.08, 0.18, 0.1);
+      }
+      function playWinFanfare() {
+        const ctx = getCtx(),
+          now = ctx.currentTime;
+        [523.25, 523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) =>
+          playTone(f, now + [0, 0.15, 0.3, 0.45, 0.6, 0.8][i], 0.3, 0.22),
+        );
+      }
+      /* ---------------- build question banks (per session, so they re-shuffle every visit) ---------------- */
+      function buildGrammarQuiz() {
+        // Show icon -> choose the correct sentence. Each question draws a random pattern
+        // (Do you have / They're / This is my / He's-She's / It's my / What...do you like /
+        // Can you / It's [prep] the) so review covers every grammar point from Units 2-9.
+        const questions = [];
+        for (let i = 0; i < 6; i++) {
+          const pattern = randomPattern();
+          const item =
+            pattern.items[Math.floor(Math.random() * pattern.items.length)];
+          const extra = pattern.randomExtra();
+          const distractors = sample(
+            pattern.items.filter((x) => x.en !== item.en),
+            3,
+          );
+          const options = shuffle([item, ...distractors]);
+          questions.push({
+            type: "grammar",
+            iconKey: item.key,
+            iconEmoji: item.emoji,
+            options: options.map((o) => pattern.sentence(o, extra)),
+            correctFull: pattern.sentence(item, extra),
+          });
+        }
+        return questions;
+      }
+
+      function buildTrueFalseQuiz() {
+        // Show an icon + a statement from a random pattern -> true / false. 6 questions.
+        const questions = [];
+        for (let i = 0; i < 6; i++) {
+          const pattern = randomPattern();
+          const item =
+            pattern.items[Math.floor(Math.random() * pattern.items.length)];
+          const extra = pattern.randomExtra();
+          const isTrue = i % 2 === 0; // alternate true/false
+          let statementItem = item;
+          if (!isTrue) {
+            const others = pattern.items.filter((x) => x.en !== item.en);
+            statementItem = others[Math.floor(Math.random() * others.length)];
+          }
+          questions.push({
+            type: "truefalse",
+            iconKey: item.key,
+            iconEmoji: item.emoji,
+            statementEn: pattern.sentence(statementItem, extra),
+            answerIsYes: isTrue,
+          });
+        }
+        return questions;
+      }
+
+      /* ---------------- state ---------------- */
+      let state = {
+        screen: "intro",
+        quizIndex: 0,
+        qIndex: 0,
+        score: 0,
+        totalScore: 0,
+        totalQuestions: 0,
+        banks: [],
+      };
+
+      const QUIZ_META = [
+        {
+          key: "grammar",
+          label: "Quiz １： Sentences",
+          build: buildGrammarQuiz,
+        },
+        {
+          key: "truefalse",
+          label: "Quiz 2 ： Practice",
+          build: buildTrueFalseQuiz,
+        },
+      ];
+
+      function resetAll() {
+        state = {
+          screen: "intro",
+          quizIndex: 0,
+          qIndex: 0,
+          score: 0,
+          totalScore: 0,
+          totalQuestions: 0,
+          banks: QUIZ_META.map((m) => m.build()),
+        };
+      }
+
+      /* ---------------- render ---------------- */
+      const app = document.getElementById("app");
+
+      function render() {
+        if (state.screen === "intro") return renderIntro();
+        if (state.screen === "quiz") return renderQuiz();
+        if (state.screen === "quizDone") return renderQuizDone();
+        if (state.screen === "final") return renderFinal();
+      }
+
+      // One line per unit - the small grammar-point recap this page shows instead of vocab cards.
+      const GRAMMAR_POINTS = [
+        { unit: "Unit 11", en: "He uses a tablet in the afternoon." },
+        { unit: "Unit 12", en: "She's watching TV." },
+        { unit: "Unit 13", en: "I always cook. / I never watch TV." },
+        { unit: "Unit 14", en: "I'm going to visit my grandma." },
+        {
+          unit: "Unit 15",
+          en: "I'm not going to study. / Is she going to clean her room?",
+        },
+        { unit: "Unit 16", en: "What was the date yesterday?" },
+        { unit: "Unit 17", en: "I played soccer yesterday." },
+        { unit: "Unit 18", en: "I ate pizza last week." },
+        { unit: "Unit 19", en: "I read twice a week." },
+      ];
+
+      function renderIntro() {
+        const pointRows = GRAMMAR_POINTS.map(
+          (p) => `
+              <div class="review-row">
+                <span class="review-unit">${p.unit}</span>
+                <span class="review-en">${p.en}</span>
+              </div>`,
+        ).join("");
+
+        app.innerHTML = `
+
+                <h2 class="section-title">ぜんぶの ふくしゅう</h2>
+                <p class="jp">
+                  Unit 11 から Unit 19 まで べんきょうした <span class="en">grammar（ぶんぽう）</span> を <br>さっと ふくしゅうします。
+                </p>
+                <div class="review-list">${pointRows}</div>
+                <p class="jp" style="margin-top:10px;">
+                 クイズでは Unit 11〜19 の ことばと えを つかいます。
+              </p>
+
+                <p class="en">
+                  Are you ready？ Let's try these quizzes！
+                </p>
+
+                <div class="btn-row">
+                  <button class="btn btn-primary" id="startBtn">Start Quiz</button>
+                </div>
+              `;
+        document.getElementById("startBtn").onclick = () => {
+          state.screen = "quiz";
+          state.quizIndex = 0;
+          state.qIndex = 0;
+          state.score = 0;
+          render();
+        };
+      }
+      function currentBank() {
+        return state.banks[state.quizIndex];
+      }
+
+      function renderQuiz() {
+        const meta = QUIZ_META[state.quizIndex];
+        const bank = currentBank();
+        const q = bank[state.qIndex];
+
+        let bodyHtml = "";
+
+        if (q.type === "vocab") {
+          bodyHtml = `
+                  <div class="quiz-icon">${quizIconHtml(q)}</div>
+               <p class="question-en">Choose the word</p>
+                  <div class="options" id="optionsWrap">
+                    ${q.options
+                      .map(
+                        (opt) =>
+                          `<button class="opt-btn" data-correct="${opt === q.correctEn}">${opt}</button>`,
+                      )
+                      .join("")}
+                  </div>
+                `;
+        } else if (q.type === "grammar") {
+          bodyHtml = `
+                  <div class="quiz-icon">${quizIconHtml(q)}</div>
+                    <p class="question-en">What sentence matches the picture?</p>
+                  <div class="options" id="optionsWrap">
+                    ${q.options
+                      .map(
+                        (opt) =>
+                          `<button class="opt-btn" data-correct="${opt === q.correctFull}">${opt}</button>`,
+                      )
+                      .join("")}
+                  </div>
+                `;
+        } else if (q.type === "truefalse") {
+          bodyHtml = `
+                  <div class="quiz-icon">${quizIconHtml(q)}</div>
+                     <p class="question-en">Is this sentence correct?</p>
+                           <p class="question-en">
+                    ${q.statementEn}
+                    <button class="speak-btn" data-say="${q.statementEn}" aria-label="Listen">🔊</button>
+                  </p>
+                  <div class="options" id="optionsWrap">
+                     <button class="opt-btn" data-correct="${q.answerIsYes === true}">Yes</button>
+                    <button class="opt-btn" data-correct="${q.answerIsYes === false}">No</button>
+                  </div>
+                `;
+        }
+
+        app.innerHTML = `
+                <span class="quiz-label">${meta.label}</span>
+               <div class="progress">Question ${state.qIndex + 1} / ${bank.length}</div>
+                ${bodyHtml}
+                <div class="feedback" id="feedback"></div>
+              `;
+
+        document.querySelectorAll(".opt-btn").forEach((btn) => {
+          btn.addEventListener("click", () => onAnswer(btn), { once: true });
+        });
+
+        document.querySelectorAll(".speak-btn").forEach((btn) => {
+          btn.addEventListener("click", () => speakText(btn.dataset.say));
+        });
+      }
+
+      function onAnswer(btn) {
+        const allBtns = document.querySelectorAll(".opt-btn");
+        const isCorrect = btn.dataset.correct === "true";
+        const feedback = document.getElementById("feedback");
+
+        allBtns.forEach((b) => {
+          b.disabled = true;
+          if (b.dataset.correct === "true") b.classList.add("correct");
+        });
+        if (!isCorrect) btn.classList.add("wrong");
+
+        if (isCorrect) {
+          state.score++;
+          playCorrectJingle();
+          feedback.textContent = "Correct! Great job!";
+          feedback.className = "feedback good";
+        } else {
+          playWrongSound();
+          feedback.textContent = "Not quite! Try again next time.";
+          feedback.className = "feedback bad";
+        }
+
+        setTimeout(() => {
+          const bank = currentBank();
+          if (state.qIndex < bank.length - 1) {
+            state.qIndex++;
+            render();
+          } else {
+            state.totalScore += state.score;
+            state.totalQuestions += bank.length;
+            state.screen = "quizDone";
+            render();
+          }
+        }, 1100);
+      }
+
+      function renderQuizDone() {
+        const meta = QUIZ_META[state.quizIndex];
+        const bank = currentBank();
+        const isLast = state.quizIndex === QUIZ_META.length - 1;
+
+        app.innerHTML = `
+                <span class="quiz-label">${meta.label}</span>
+                <h2 class="section-title">Well done！</h2>
+                <p class="center-text en" style="font-size:1.2rem;">
+                  ${state.score} / ${bank.length} Correct
+                </p>
+                <div class="btn-row">
+                  <button class="btn btn-primary" id="nextBtn">
+                    ${isLast ? "Results" : "Next Quiz"}
+                  </button>
+                </div>
+              `;
+
+        document.getElementById("nextBtn").onclick = () => {
+          if (isLast) {
+            state.screen = "final";
+          } else {
+            state.quizIndex++;
+            state.qIndex = 0;
+            state.score = 0;
+            state.screen = "quiz";
+          }
+          render();
+        };
+      }
+
+      function renderFinal() {
+        const pct = Math.round((state.totalScore / state.totalQuestions) * 100);
+        let emoji = "🌟";
+        let msg = "Excellent!";
+        if (pct < 50) {
+          emoji = "🌱";
+          msg = "Great try! Aim for 100%";
+        } else if (pct < 80) {
+          emoji = "🌿";
+          msg = "Good try! Let`s aim for a better score next time";
+        }
+        playWinFanfare();
+        app.innerHTML = `
+                <div class="result-emoji">${emoji}</div>
+                <div class="result-row">
+                  <img src="../images/sh1.png" class="result-icon" alt="" />
+                  <div class="result-score">${state.totalScore} / ${state.totalQuestions} Points（${pct}％）</div>
+                  <img src="../images/kh1.png" class="result-icon" alt="" />
+                </div>
+                <p class="result-msg en">${msg}</p>
+                <div class="btn-row">
+                  <button class="btn btn-primary" id="retryBtn">Try again!</button>
+                </div>
+              `;
+
+        document.getElementById("retryBtn").onclick = () => {
+          resetAll();
+
+          render();
+        };
+      }
+
+      /* ---------------- init ---------------- */
+      resetAll();
+      render();
+    </script>
+  </body>
+</html>

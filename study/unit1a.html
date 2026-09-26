@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Page 5. Questions and Writing | Adventure Island 4</title>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        --font-chalk:
+          "Chalkboard SE", "Comic Sans MS", "Segoe Print", sans-serif;
+        --font-jp:
+          "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        --green-bg: #30b0c7;
+        --green-panel: #fffdf8;
+        --yellow-btn: #ff7b54;
+        --yellow-btn-active: #c2522f;
+        --heading: #0e6e6e;
+        --sun: #ffd23f;
+        --ocean: #1e97a0;
+        --ocean-light: #54c7c9;
+        --sand: #f6e3b4;
+        --correct: #5fd66a;
+        --wrong: #ff7b54;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        font-family: var(--font-jp);
+        background: var(--green-bg);
+        background-image: linear-gradient(180deg, #30b0c7 0%, #40c8e0 100%);
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 14px 60px;
+      }
+
+      h1.page-title {
+        font-family: var(--font-chalk);
+        color: var(--sun);
+        -webkit-text-stroke: 1.5px var(--heading);
+        text-align: center;
+        font-size: clamp(1.4rem, 6vw, 2.4rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 18px;
+      }
+      .back-btn {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--green-panel);
+        background: var(--yellow-btn);
+        border: 3px solid var(--yellow-btn-active);
+        border-radius: 999px;
+        padding: 8px 16px;
+        text-decoration: none;
+        z-index: 10;
+        box-shadow: 0 3px 0 var(--yellow-btn-active);
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .back-btn:active {
+        transform: scale(0.96);
+        background: var(--yellow-btn-active);
+      }
+
+      @media (max-width: 480px) {
+        .back-btn {
+          top: 10px;
+          left: 10px;
+          padding: 6px 12px;
+          font-size: 0.85rem;
+        }
+      }
+      #app {
+        width: 100%;
+        max-width: 640px;
+        background: var(--green-panel);
+        border-radius: 22px;
+        border: 4px solid var(--ocean);
+        box-shadow:
+          0 8px 0 var(--heading),
+          0 14px 24px rgba(0, 0, 0, 0.25);
+        padding: 22px 18px 26px;
+      }
+
+      .badge {
+        display: inline-block;
+        background: var(--heading);
+        color: #fff;
+        font-family: var(--font-chalk);
+        font-size: 0.9rem;
+        padding: 4px 14px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+
+      h2.section-title {
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.2rem, 5vw, 1.7rem);
+        margin-bottom: 14px;
+        border-bottom: 3px dashed var(--sun);
+        padding-bottom: 8px;
+      }
+
+      p.jp {
+        font-size: clamp(1rem, 4vw, 1.15rem);
+        line-height: 1.9;
+        color: #333;
+        margin-bottom: 14px;
+      }
+
+      .en {
+        color: var(--ocean);
+        font-family: var(--font-chalk);
+        font-weight: 700;
+      }
+
+      /* --- question cards --- */
+      .q-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin: 16px 0 10px;
+      }
+
+      .q-card {
+        border: 3px solid #333;
+        border-radius: 14px;
+        background: #fff;
+        padding: 14px 16px 16px;
+      }
+
+      .q-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .q-num {
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--ocean);
+        color: #fff;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+
+      .q-en {
+        font-family: var(--font-chalk);
+        color: var(--heading);
+        font-size: clamp(1.05rem, 4.5vw, 1.3rem);
+        line-height: 1.3;
+        flex: 1;
+      }
+
+      .q-jp {
+        font-size: 0.92rem;
+        color: #666;
+        margin: 4px 0 12px 40px;
+        line-height: 1.6;
+      }
+
+      .write-box {
+        width: 100%;
+        margin-left: 40px;
+        margin-bottom: 12px;
+        max-width: calc(100% - 40px);
+      }
+
+      .write-input {
+        width: 100%;
+        font-family: var(--font-jp);
+        font-size: 1rem;
+        border: none;
+        border-bottom: 2px dashed var(--ocean-light);
+        background: transparent;
+        padding: 6px 2px;
+        color: #333;
+      }
+
+      .write-input:focus {
+        outline: none;
+        border-bottom-color: var(--ocean);
+      }
+
+      .reveal-btn {
+        margin-left: 40px;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--heading);
+        background: #e3f4f4;
+        border: 2px solid var(--ocean);
+        border-radius: 999px;
+        padding: 5px 14px;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .reveal-btn:active {
+        transform: scale(0.96);
+      }
+
+      .example-box {
+        margin: 10px 0 0 40px;
+        background: #fff6e0;
+        border: 2px dashed var(--sun);
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: none;
+      }
+
+      .example-box.shown {
+        display: block;
+      }
+
+      .example-label {
+        font-family: var(--font-chalk);
+        font-size: 0.75rem;
+        color: #b98a00;
+        margin-bottom: 4px;
+        letter-spacing: 0.03em;
+      }
+
+      .example-en {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-chalk);
+        color: #333;
+        font-size: 1.02rem;
+        margin-bottom: 4px;
+      }
+
+      .example-jp {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .speak-btn {
+        background: var(--heading);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        padding: 0;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .speak-btn:active {
+        transform: scale(0.88);
+        background: #0a5555;
+      }
+
+      .speak-btn.small {
+        width: 26px;
+        height: 26px;
+        font-size: 0.8rem;
+      }
+
+      /* --- buttons --- */
+      .btn {
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        color: var(--green-panel);
+        background: var(--yellow-btn);
+        border: 3px solid #333;
+        border-radius: 12px;
+        cursor: pointer;
+        padding: 12px 18px;
+        font-size: clamp(1rem, 4.5vw, 1.2rem);
+        width: 100%;
+        display: block;
+        text-align: center;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+        background: var(--yellow-btn-active);
+      }
+
+      .btn-primary {
+        max-width: 260px;
+        margin: 8px auto 0;
+      }
+
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 class="page-title">Page 5：Questions and Writing</h1>
+    <a class="back-btn" href="unit1.html">← Back</a>
+    <div id="app"></div>
+
+    <script>
+      function speakText(text) {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "en-US";
+        utter.rate = 0.85;
+        window.speechSynthesis.speak(utter);
+      }
+
+      const QUESTIONS = [
+        {
+          en: "What's your name?",
+          jp: "あなたの なまえは なんですか？",
+          exampleEn: "My name is Sami.",
+          exampleJp: "わたしの なまえは さみです。",
+        },
+        {
+          en: "How old are you?",
+          jp: "あなたは なんさいですか？",
+          exampleEn: "I'm nine years old.",
+          exampleJp: "わたしは ９さいです。",
+        },
+        {
+          en: "Where are you from?",
+          jp: "あなたは どこの しゅっしんですか？",
+          exampleEn: "I'm from Japan.",
+          exampleJp: "わたしは にほんの しゅっしんです。",
+        },
+        {
+          en: "Where do you live?",
+          jp: "あなたは どこに すんでいますか？",
+          exampleEn: "I live in Fukuoka.",
+          exampleJp: "わたしは ふくおかに すんでいます。",
+        },
+        {
+          en: "What school do you go to?",
+          jp: "あなたは どの がっこうに かよっていますか？",
+          exampleEn: "I go to Adventure Island School.",
+          exampleJp:
+            "わたしは アドベンチャー・アイランド・スクールに かよっています。",
+        },
+        {
+          en: "What grade are you in?",
+          jp: "あなたは なんねんせいですか？",
+          exampleEn: "I'm in grade　３.",
+          exampleJp: "わたしは ３ねんせいです。",
+        },
+        {
+          en: "What's your favorite subject?",
+          jp: "あなたの すきな かもくは なんですか？",
+          exampleEn: "My favorite subject is English.",
+          exampleJp: "わたしの すきな かもくは えいごです。",
+        },
+        {
+          en: "How do you go to school?",
+          jp: "あなたは どうやって がっこうに いきますか？",
+          exampleEn: "I walk to school.",
+          exampleJp: "わたしは あるいて がっこうに いきます。",
+        },
+        {
+          en: "Do you like homework?",
+          jp: "しゅくだいは すきですか？",
+          exampleEn: "Yes, I do.",
+          exampleJp: "はい、すきです。",
+        },
+        {
+          en: "Do you have any brothers or sisters?",
+          jp: "きょうだいは いますか？",
+          exampleEn: "Yes, I have one brother.",
+          exampleJp: "はい、あにが ひとり います。",
+        },
+      ];
+
+      const app = document.getElementById("app");
+
+      function render() {
+        const cards = QUESTIONS.map(
+          (q, i) => `
+                <div class="q-card">
+                  <div class="q-head">
+                    <div class="q-num">${i + 1}</div>
+                    <div class="q-en">${q.en}</div>
+                    <button class="speak-btn" data-say="${q.en}" aria-label="Listen">🔊</button>
+                  </div>
+                  <div class="q-jp">${q.jp}</div>
+
+                  <div class="write-box">
+                    <input
+                      class="write-input"
+                      type="text"
+                      placeholder="Write your own answer here..."
+                      data-index="${i}"
+                    />
+                  </div>
+
+                  <button class="reveal-btn" data-index="${i}">Show example answer</button>
+
+                  <div class="example-box" id="example-${i}">
+                    <div class="example-label">EXAMPLE ANSWER</div>
+                    <div class="example-en">
+                      ${q.exampleEn}
+                      <button class="speak-btn small" data-say="${q.exampleEn}" aria-label="Listen">🔊</button>
+                    </div>
+                    <div class="example-jp">${q.exampleJp}</div>
+                  </div>
+                </div>`,
+        ).join("");
+
+        app.innerHTML = `
+                <h2 class="section-title">Practice：じぶんについて こたえよう</h2>
+                <p class="jp">
+                  したの しつもんに、じぶんの こたえを かいてみよう。
+                  わからないときは「Show example answer」を おしてね。
+                </p>
+                <div class="q-list">${cards}</div>
+              `;
+
+        document.querySelectorAll(".speak-btn").forEach((btn) => {
+          btn.addEventListener("click", () => speakText(btn.dataset.say));
+        });
+
+        document.querySelectorAll(".reveal-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const box = document.getElementById(`example-${btn.dataset.index}`);
+            const nowShown = box.classList.toggle("shown");
+            btn.textContent = nowShown
+              ? "Hide example answer"
+              : "Show example answer";
+          });
+        });
+      }
+
+      render();
+    </script>
+  </body>
+</html>

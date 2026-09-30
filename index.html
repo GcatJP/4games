@@ -135,7 +135,22 @@
         pointer-events: none;
         user-select: none;
       }
-
+      .btn-bg {
+        position: relative;
+        isolation: isolate;
+      }
+      .btn-bg::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: var(--btn-bg-img);
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.5;
+        z-index: -1;
+        pointer-events: none;
+      }
       /* LANDSCAPE */
       @media screen and (orientation: landscape) {
         body {
@@ -284,7 +299,14 @@
           <span class="btn-text">Study</span>
           <img class="btn-icon" src="images/v4.png" alt="" />
         </a>
-        <a class="btn" href="videos.html" style="background-color: #28756d">
+        <a
+          class="btn btn-bg"
+          href="videos.html"
+          style="
+            background-color: #28756d;
+            --btn-bg-img: url(&quot;./images/headphones.png&quot;);
+          "
+        >
           <span class="btn-text">Videos<br />& Audio</span>
         </a>
 

@@ -484,6 +484,7 @@
     <h1 class="page-title">Unit 10：Review</h1>
     <a class="back-btn" href="index.html">← Back</a>
     <div id="app"></div>
+    <script src="review.js"></script>
 
     <script>
       const IMG_PATH = "../images/";
@@ -889,6 +890,7 @@
       ];
 
       function resetAll() {
+        Review.reset();
         state = {
           screen: "intro",
           quizIndex: 0,
@@ -1044,6 +1046,7 @@
           feedback.className = "feedback good";
         } else {
           playWrongSound();
+          Review.recordWrong(btn, QUIZ_META[state.quizIndex].label);
           feedback.textContent = "Not quite! Try again next time.";
           feedback.className = "feedback bad";
         }
@@ -1112,7 +1115,8 @@
                   <div class="result-score">${state.totalScore} / ${state.totalQuestions} Points（${pct}％）</div>
                   <img src="../images/kh1.png" class="result-icon" alt="" />
                 </div>
-                <p class="result-msg en">${msg}</p>
+                  <p class="result-msg en">${msg}</p>
+                ${Review.html("en")}
                 <div class="btn-row">
                   <button class="btn btn-primary" id="retryBtn">Try again!</button>
                 </div>

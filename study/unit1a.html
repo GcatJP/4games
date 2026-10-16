@@ -32,8 +32,8 @@
         --ocean: #1e97a0;
         --ocean-light: #54c7c9;
         --sand: #f6e3b4;
-        --correct: #5fd66a;
-        --wrong: #ff7b54;
+        --correct: #2e9e3a;
+        --wrong: #d9531e;
       }
 
       html,
@@ -109,17 +109,6 @@
         padding: 22px 18px 26px;
       }
 
-      .badge {
-        display: inline-block;
-        background: var(--heading);
-        color: #fff;
-        font-family: var(--font-chalk);
-        font-size: 0.9rem;
-        padding: 4px 14px;
-        border-radius: 999px;
-        margin-bottom: 10px;
-      }
-
       h2.section-title {
         font-family: var(--font-chalk);
         color: var(--heading);
@@ -136,12 +125,6 @@
         margin-bottom: 14px;
       }
 
-      .en {
-        color: var(--ocean);
-        font-family: var(--font-chalk);
-        font-weight: 700;
-      }
-
       /* --- question cards --- */
       .q-list {
         display: flex;
@@ -155,6 +138,11 @@
         border-radius: 14px;
         background: #fff;
         padding: 14px 16px 16px;
+        transition: border-color 0.2s ease;
+      }
+
+      .q-card.is-correct {
+        border-color: var(--correct);
       }
 
       .q-head {
@@ -195,14 +183,17 @@
       }
 
       .write-box {
-        width: 100%;
+        display: flex;
+        gap: 8px;
+        align-items: center;
         margin-left: 40px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         max-width: calc(100% - 40px);
       }
 
       .write-input {
-        width: 100%;
+        flex: 1;
+        min-width: 0;
         font-family: var(--font-jp);
         font-size: 1rem;
         border: none;
@@ -215,6 +206,57 @@
       .write-input:focus {
         outline: none;
         border-bottom-color: var(--ocean);
+      }
+
+      .check-btn {
+        flex-shrink: 0;
+        font-family: var(--font-chalk);
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--green-panel);
+        background: var(--yellow-btn);
+        border: 2px solid #333;
+        border-radius: 999px;
+        padding: 6px 16px;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          background 0.15s ease;
+      }
+
+      .check-btn:active {
+        transform: scale(0.95);
+        background: var(--yellow-btn-active);
+      }
+
+      .feedback {
+        margin: 0 0 10px 40px;
+        font-family: var(--font-chalk);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        display: none;
+      }
+
+      .feedback.shown {
+        display: block;
+      }
+
+      .feedback.ok {
+        color: var(--correct);
+        font-weight: 700;
+      }
+
+      .feedback.ng {
+        color: var(--wrong);
+        font-weight: 700;
+      }
+
+      .feedback .hint {
+        display: block;
+        color: #666;
+        font-weight: 400;
+        font-size: 0.85rem;
+        margin-top: 2px;
       }
 
       .reveal-btn {
@@ -302,41 +344,6 @@
         height: 26px;
         font-size: 0.8rem;
       }
-
-      /* --- buttons --- */
-      .btn {
-        font-family: var(--font-chalk);
-        font-weight: 700;
-        color: var(--green-panel);
-        background: var(--yellow-btn);
-        border: 3px solid #333;
-        border-radius: 12px;
-        cursor: pointer;
-        padding: 12px 18px;
-        font-size: clamp(1rem, 4.5vw, 1.2rem);
-        width: 100%;
-        display: block;
-        text-align: center;
-        transition:
-          transform 0.08s ease,
-          background 0.15s ease;
-      }
-
-      .btn:active {
-        transform: scale(0.97);
-        background: var(--yellow-btn-active);
-      }
-
-      .btn-primary {
-        max-width: 260px;
-        margin: 8px auto 0;
-      }
-
-      .btn-row {
-        display: flex;
-        justify-content: center;
-        margin-top: 18px;
-      }
     </style>
   </head>
 
@@ -356,30 +363,51 @@
         window.speechSynthesis.speak(utter);
       }
 
+      /* =====================================================================
+         EDIT ME: acceptable answers
+         ---------------------------------------------------------------------
+         Each question has an "accept" list. A student's sentence is OK if it
+         matches ANY pattern in the list.
+
+         "*" means "anything here" (at least one letter).
+           "My name is *"  ->  "My name is Sami" OK,  "My name is" NOT OK
+
+         The checker ignores: capital letters, . , ! ?  and extra spaces.
+         It also treats these as the same:
+           I am = I'm,   do not = don't,   favourite = favorite
+         So you only need to write ONE version (e.g. "I'm" covers "I am").
+
+         The first pattern in each list is used for the hint when a student
+         gets it wrong, so put the most typical pattern first.
+         ===================================================================== */
       const QUESTIONS = [
         {
           en: "What's your name?",
           jp: "あなたの なまえは なんですか？",
           exampleEn: "My name is Sami.",
           exampleJp: "わたしの なまえは さみです。",
+          accept: ["My name is *", "I'm *", "Call me *"],
         },
         {
           en: "How old are you?",
           jp: "あなたは なんさいですか？",
           exampleEn: "I'm nine years old.",
           exampleJp: "わたしは ９さいです。",
+          accept: ["I'm * years old", "I'm * year old", "I'm *", "* years old"],
         },
         {
           en: "Where are you from?",
           jp: "あなたは どこの しゅっしんですか？",
           exampleEn: "I'm from Japan.",
           exampleJp: "わたしは にほんの しゅっしんです。",
+          accept: ["I'm from *", "I come from *"],
         },
         {
           en: "Where do you live?",
           jp: "あなたは どこに すんでいますか？",
           exampleEn: "I live in Fukuoka.",
           exampleJp: "わたしは ふくおかに すんでいます。",
+          accept: ["I live in *", "I live at *", "I live near *"],
         },
         {
           en: "What school do you go to?",
@@ -387,45 +415,122 @@
           exampleEn: "I go to Adventure Island School.",
           exampleJp:
             "わたしは アドベンチャー・アイランド・スクールに かよっています。",
+          accept: ["I go to *", "I attend *"],
         },
         {
           en: "What grade are you in?",
           jp: "あなたは なんねんせいですか？",
-          exampleEn: "I'm in grade　３.",
+          exampleEn: "I'm in grade 3.",
           exampleJp: "わたしは ３ねんせいです。",
+          accept: [
+            "I'm in grade *",
+            "I'm in * grade",
+            "I'm in the * grade",
+            "I'm in the grade *",
+            "Grade *",
+          ],
         },
         {
           en: "What's your favorite subject?",
           jp: "あなたの すきな かもくは なんですか？",
           exampleEn: "My favorite subject is English.",
           exampleJp: "わたしの すきな かもくは えいごです。",
+          accept: [
+            "My favorite subject is *",
+            "My favorite is *",
+            "I like *",
+            "I love *",
+          ],
         },
         {
           en: "How do you go to school?",
           jp: "あなたは どうやって がっこうに いきますか？",
           exampleEn: "I walk to school.",
           exampleJp: "わたしは あるいて がっこうに いきます。",
+          accept: [
+            "I walk to school",
+            "I go to school by *",
+            "I go to school on foot",
+            "I go by *",
+            "I come to school by *",
+            "I get to school by *",
+            "I take * to school",
+            "I ride * to school",
+            "I bike to school",
+            "I cycle to school",
+            "* drives me to school",
+          ],
         },
         {
           en: "Do you like homework?",
           jp: "しゅくだいは すきですか？",
           exampleEn: "Yes, I do.",
           exampleJp: "はい、すきです。",
+          accept: [
+            "Yes I do",
+            "No I don't",
+            "Yes I like homework",
+            "Yes I like it",
+            "Yes, I do",
+            "No, I don't",
+            "Yes, I like homework",
+            "Yes, I like it",
+            "No, I don't like homework",
+            "No, I don't like it",
+            "I like homework",
+            "I don't like homework",
+          ],
         },
         {
           en: "Do you have any brothers or sisters?",
           jp: "きょうだいは いますか？",
           exampleEn: "Yes, I have one brother.",
           exampleJp: "はい、あにが ひとり います。",
+          accept: [
+            "Yes I have *",
+            "Yes I do",
+            "No I don't",
+            "Yes, I do",
+            "No, I don't",
+            "No I don't have *",
+            "I have *",
+            "I don't have *",
+          ],
         },
       ];
+
+      /* ---------- checker (you shouldn't need to edit below) ---------- */
+
+      function normalize(s) {
+        return s
+          .toLowerCase()
+          .replace(/[\u2018\u2019\u02bc`´]/g, "'")
+          .replace(/[.,!?。、！？]/g, " ")
+          .replace(/\bi am\b/g, "i'm")
+          .replace(/\bdo not\b/g, "don't")
+          .replace(/\bfavourite\b/g, "favorite")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function patternToRegex(pattern) {
+        const escaped = normalize(pattern)
+          .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+          .replace(/\*/g, ".+");
+        return new RegExp("^" + escaped + "$");
+      }
+
+      function isAccepted(answer, acceptList) {
+        const text = normalize(answer);
+        return acceptList.some((p) => patternToRegex(p).test(text));
+      }
 
       const app = document.getElementById("app");
 
       function render() {
         const cards = QUESTIONS.map(
           (q, i) => `
-                <div class="q-card">
+                <div class="q-card" id="card-${i}">
                   <div class="q-head">
                     <div class="q-num">${i + 1}</div>
                     <div class="q-en">${q.en}</div>
@@ -437,10 +542,16 @@
                     <input
                       class="write-input"
                       type="text"
-                      placeholder="Write your own answer here..."
+                      placeholder="Type your sentence here..."
+                      autocomplete="off"
+                      autocapitalize="sentences"
+                      spellcheck="false"
                       data-index="${i}"
                     />
+                    <button class="check-btn" data-index="${i}">Check</button>
                   </div>
+
+                  <div class="feedback" id="feedback-${i}"></div>
 
                   <button class="reveal-btn" data-index="${i}">Show example answer</button>
 
@@ -458,7 +569,8 @@
         app.innerHTML = `
                 <h2 class="section-title">Practice：じぶんについて こたえよう</h2>
                 <p class="jp">
-                  したの しつもんに、じぶんの こたえを かいてみよう。
+                  したの しつもんに、えいごの ぶんで こたえを かいて、
+                  「Check」を おしてね。
                   わからないときは「Show example answer」を おしてね。
                 </p>
                 <div class="q-list">${cards}</div>
@@ -477,6 +589,51 @@
               : "Show example answer";
           });
         });
+
+        document.querySelectorAll(".check-btn").forEach((btn) => {
+          btn.addEventListener("click", () => checkAnswer(btn.dataset.index));
+        });
+
+        document.querySelectorAll(".write-input").forEach((input) => {
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") checkAnswer(input.dataset.index);
+          });
+          input.addEventListener("input", () => {
+            const i = input.dataset.index;
+            document.getElementById(`feedback-${i}`).classList.remove("shown");
+            document.getElementById(`card-${i}`).classList.remove("is-correct");
+          });
+        });
+      }
+
+      function checkAnswer(index) {
+        const q = QUESTIONS[index];
+        const input = document.querySelector(
+          `.write-input[data-index="${index}"]`,
+        );
+        const fb = document.getElementById(`feedback-${index}`);
+        const card = document.getElementById(`card-${index}`);
+        const value = input.value.trim();
+
+        fb.classList.add("shown");
+        fb.classList.remove("ok", "ng");
+        card.classList.remove("is-correct");
+
+        if (!value) {
+          fb.classList.add("ng");
+          fb.textContent = "Type a sentence first! ✏️";
+          return;
+        }
+
+        if (isAccepted(value, q.accept)) {
+          fb.classList.add("ok");
+          fb.textContent = "✓ Great sentence!";
+          card.classList.add("is-correct");
+        } else {
+          const hint = q.accept[0].replace(/\*/g, "…");
+          fb.classList.add("ng");
+          fb.innerHTML = `✗ Try again!<span class="hint">Hint: ${hint}</span>`;
+        }
       }
 
       render();

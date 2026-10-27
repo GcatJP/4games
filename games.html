@@ -190,18 +190,23 @@
           margin-top: 2vh;
         }
 
+        /* 5 buttons: 2 columns, rows grow to fit, last button centred */
         .grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          grid-template-rows: repeat(2, 1fr);
           gap: clamp(10px, 2vw, 24px);
           width: min(85vw, 900px);
-          height: min(70vh, 460px);
+        }
+
+        .grid .btn:last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+          justify-self: center;
+          width: calc(50% - clamp(5px, 1vw, 12px));
         }
 
         .btn {
           font-size: clamp(1rem, 4.5vw, 3.4rem);
-          height: clamp(80px, 45vh, 220px);
+          height: clamp(70px, 22vh, 150px);
         }
       }
 
@@ -234,9 +239,7 @@
 
         .grid {
           grid-template-columns: repeat(2, 1fr) !important;
-          grid-template-rows: repeat(2, 1fr) !important;
           width: min(92vw, 500px) !important;
-          height: min(80vh, 220px) !important;
           gap: clamp(6px, 1.5vw, 14px) !important;
         }
 
@@ -340,6 +343,14 @@
         >
           <span class="btn-text">Sentence Builder</span>
           <img class="btn-icon" src="images/sb4.png" alt="" />
+        </a>
+        <a
+          class="btn"
+          href="right/index.html"
+          style="background-color: #007286"
+        >
+          <span class="btn-text">Right or Wrong?</span>
+          <img class="btn-icon" src="images/right.png" alt="" />
         </a>
       </div>
     </div>

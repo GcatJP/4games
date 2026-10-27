@@ -153,7 +153,7 @@
         user-select: none;
       }
 
-      /* LANDSCAPE */
+      /* LANDSCAPE: 2 columns x 2 rows */
       @media screen and (orientation: landscape) {
         body {
           background-image: url("images/bg_land3.png");
@@ -182,20 +182,19 @@
 
         .grid {
           display: grid;
-          grid-template-columns: repeat(2, 1fr); /* old */
-          grid-template-columns: repeat(3, 1fr); /* new */
-          grid-template-rows: 1fr;
-          gap: clamp(10px, 3vw, 30px);
-          width: min(90vw, 1000px);
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: repeat(2, auto);
+          gap: clamp(10px, 2.5vw, 24px);
+          width: min(80vw, 900px);
         }
 
         .btn {
-          font-size: clamp(1rem, 5vw, 3.6rem);
-          height: clamp(90px, 45vh, 240px);
-          flex-direction: column;
-          justify-content: center;
-          gap: 0.2em;
-          padding: 0.4em 0.6em;
+          font-size: clamp(1.4rem, 5vw, 3.6rem);
+          height: clamp(70px, 22vh, 150px);
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 0.4em;
+          padding: 0 0.6em;
         }
       }
 
@@ -224,16 +223,16 @@
         }
 
         .grid {
-          gap: clamp(10px, 3vw, 24px) !important;
+          gap: clamp(8px, 2vw, 16px) !important;
         }
 
         .btn {
-          height: clamp(55px, 34vh, 140px) !important;
-          font-size: clamp(0.85rem, 4.5vw, 2.6rem) !important;
+          height: clamp(45px, 24vh, 100px) !important;
+          font-size: clamp(0.85rem, 4.5vw, 2.2rem) !important;
         }
       }
 
-      /* PORTRAIT */
+      /* PORTRAIT: 1 column x 4 rows */
       @media screen and (orientation: portrait) {
         body {
           overflow-y: auto;
@@ -255,14 +254,14 @@
         .grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: clamp(12px, 6vw, 60px);
+          gap: clamp(10px, 4vw, 40px);
           width: 100%;
           max-width: 520px;
         }
 
         .btn {
           font-size: clamp(1.2rem, 10vw, 4rem);
-          height: clamp(90px, 26vw, 240px);
+          height: clamp(80px, 22vw, 200px);
         }
       }
 
@@ -280,13 +279,13 @@
         }
 
         .grid {
-          gap: 28px !important;
+          gap: 20px !important;
           width: 100% !important;
           margin-top: -5vh !important;
         }
 
         .btn {
-          height: clamp(90px, 34vw, 200px) !important;
+          height: clamp(80px, 30vw, 180px) !important;
           font-size: clamp(1.1rem, 11vw, 3.4rem) !important;
         }
       }
@@ -298,6 +297,10 @@
     <a class="back-btn" href="index.html">← Back</a>
     <div class="grid-wrapper">
       <div class="grid" id="main-grid">
+        <a class="btn" href="unit1a.html" style="background-color: #0e6e6e">
+          <span class="btn-text">1a</span>
+          <img class="btn-icon" src="../images/1a.png" alt="" />
+        </a>
         <a class="btn" href="unit1b.html" style="background-color: #0e6e6e">
           <span class="btn-text">1b</span>
           <img class="btn-icon" src="../images/watch.png" alt="" />
@@ -306,7 +309,6 @@
           <span class="btn-text">1c</span>
           <img class="btn-icon" src="../images/drink.png" alt="" />
         </a>
-
         <a class="btn" href="unit1d.html" style="background-color: #0e6e6e">
           <span class="btn-text">1d</span>
           <img class="btn-icon" src="../images/headache.png" alt="" />
